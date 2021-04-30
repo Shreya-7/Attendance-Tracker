@@ -1,0 +1,55 @@
+nav {
+  background-color: #f79e02;
+}
+
+.nav-link.active {
+  background-color: #6cdaee;
+  border-radius: 5px;
+}
+
+.text-left.welcome-text {
+  padding: 10px 0px 10px 30px;
+  background-color: #6cdaee;
+  margin-bottom: 0px;
+}
+
+.form-outer-div {
+  padding: 20px;
+}
+
+button {
+  background-color: #f79e02 !important;
+  color: #9fedd7 !important;
+  border: none !important;
+  margin-top: 10px;
+  font-weight: bold !important;
+}
+
+h2 {
+  color: #026670;
+}
+
+.custom-file {
+  margin-top: 10px;
+}
+
+a {
+  color: #309ead;
+  text-decoration: none;
+}
+
+.card-columns.courses {
+  margin: 20px;
+}
+
+.message {
+  display: none;
+}
+
+#down-course {
+  margin-bottom: 10px;
+}
+
+#hide_this_input {
+  display: none;
+}

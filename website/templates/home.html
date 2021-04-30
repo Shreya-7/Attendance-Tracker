@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+
+{% block title %} Attendance Tracker - Home {% endblock %}
+
+{% block body %}
+
+<div class="card-group">
+    <div class="card" id='upload_card'>
+        <div class="card-body">
+            <h4 class="card-title">Upload Attendance</h4>
+            <form id="upload_attendance_form" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <select class="form-control" id="up-course" name="course" required="">
+                        {% for course in courses %}
+                            <option value='{{ course.course_id }}-{{ course.batch }}'>
+                                {{ course.course_id }} - {{ course.course_name }} (Batch {{ course.batch }})
+                            </option>
+                        {% endfor %}
+                    </select>                    
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="date" name="date" required="" id="attendance-date">
+                </div>
+                <div class="form-group">
+                    <div class="custom-file">
+                        <label class="custom-file-label" for="up-file">Choose file (.csv)</label>
+                        <input type="file" id="up-file" name="file" class="custom-file-input" accept=".csv" required="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="flag-list" name="flags" placeholder="Flag Roll Numbers">
+                    <small class="form-text text-muted">
+                        Enter a comma separated list of roll numbers to be flagged.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="end-time" name="end-time" placeholder="Meeting End Time" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="threshold" placeholder="Threshold" required>
+                    <button class="btn btn-primary" type="submit">Upload</button>
+                </div>
+            </form>
+            <span class="message alert" id="upload_attendance_alert"></span>
+        </div>
+    </div>
+    <div class="card" id='download_card'>
+        <div class="card-body">
+            <h4 class="card-title">Download Attendance</h4>
+            <form action = "{{ url_for('download_attendance') }}" method='post' enctype="multipart/form-data">
+                <div class="form-group">
+                    <select class="form-control" id="down-course" name='down-course'required="">
+                        {% for course in courses %}
+                            <option value='{{ course.course_id }}-{{ course.batch }}'>
+                                {{ course.course_id }} - {{ course.course_name }} (Batch {{ course.batch }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="complete" name="report_type" class="custom-control-input" value="1" required>
+                        <label class="custom-control-label" for="complete">Complete Report</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="defaulter" name="report_type" class="custom-control-input" value="0" required>
+                        <label class="custom-control-label" for="defaulter">Defaulter List</label>
+                    </div>
+                </div>                
+                <div class="form-group">
+                    <select class="form-control" id="report_format" name='report_format' required="">
+                        <option value="0">CSV</option>
+                        <option value="1">Excel</option>
+                    </select>
+                    <button class="btn btn-primary" type="submit">Download</button>
+                </div>
+                
+            </form>
+            <span class="message alert" id="download_attendance_alert"></span>
+
+            <hr>
+
+            <h4 class="card-title">Delete Course</h4>
+            <form id="delete_course_form" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <select class="form-control" id="del-course" name="course" required="">
+                        {% for course in courses %}
+                        <option value='{{ course.course_id }}-{{ course.batch }}'>
+                            {{ course.course_id }} - {{ course.course_name }} (Batch {{ course.batch }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-primary" type="submit">Delete</button>
+                </div>
+            </form>
+            <span class="message alert" id="delete_course_alert"></span>
+        </div>
+    </div>
+    <div class="card" id='add_card'>
+        <div class="card-body">
+            <h4 class="card-title">Add a Course</h4>
+            <form id='add_course_form' method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="course_id" placeholder="Course ID" required="">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="course_name" placeholder="Course Name" required="">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" name="batch" placeholder="Batch (Starting Year)" required="">
+                </div>
+                <div class="custom-file">
+                    <label class="custom-file-label" for="course-file">Choose Student file (.csv)</label>
+                    <input type="file" id="course-file" name="file" class="custom-file-input" accept=".csv" required>
+                </div>
+                <button class="btn btn-primary" type="submit">Create Course</button>
+            </form>
+            <div class="message alert" id="add_course_alert"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
