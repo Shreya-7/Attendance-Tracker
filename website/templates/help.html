@@ -1,0 +1,368 @@
+{% extends "layout.html" %} 
+
+{% block title %} Help - Attendance Tracker {% endblock %} 
+
+{% block body %}
+
+<div class="help-container container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="help-list" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#get-started" role="tab" aria-controls="get-started"
+                                aria-selected="true">
+                                <h5>Get Started</h5>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#add" role="tab" aria-controls="add"
+                                aria-selected="false">
+                                <h5>Add A Course</h5>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#upload" role="tab" aria-controls="upload"
+                                aria-selected="false">
+                                <h5>Upload A Report</h5>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#download" role="tab" aria-controls="download" aria-selected="false">
+                                <h5>Download A Report</h5>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#delete" role="tab" aria-controls="delete" aria-selected="false">
+                                <h5>Delete A Course</h5>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane active" id="get-started" role="tabpanel">
+                            <p class="card-text">This describes the general flow of using this webapp. For more details,
+                                navigate to the respective tabs.
+                            </p>
+                            <ol class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    Before we start tracking attendance, a course has to be added, assigned to a batch
+                                    and students added to it. This is a one-time setup for every course.                                 
+                                </li>
+                                <li class="list-group-item">
+                                    To track attendance for a course, an attendance report from MS Teams or responses from 
+                                    a Google form has to be attached. That's it.
+                                </li>
+                                <li class="list-group-item">
+                                    To view the tracked attendance for a course, reports can be downloaded in multiple
+                                    formats. These reports can either be regular or defaulter, and are automatically
+                                    updated till the latest date for which attendance has been tracked.
+                                </li>
+                                <li class="list-group-item">
+                                    To no longer track attendance for a course, it can be deleted. This is an irreversible process.
+                                </li>
+                                <li class="list-group-item">
+                                    Meticulous care has been taken to catch and display any errors regarding user action 
+                                    with detailed information. If any such error is not caught, please report it back to us.
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tab-pane" id="add" role="tabpanel" aria-labelledby="add-tab">
+                            <p class="card-text">
+                                A course is uniquely identified by its <span class="highlight">Course ID</span> and <span class="highlight">Batch</span>. This means you can track 
+                                attendance for the same course across multiple batches.
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        Navigate to the <span class="highlight">Add Course</span> section of the homepage. It consists of a single form.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Fill in the <span class="highlight">Course ID</span>. For example, <b>CS402</b>
+                                    </li>
+                                    <li class="list-group-item">
+                                        Fill in the <span class="highlight">Course Name</span>. For example, <b>Data Structures and Algorithms</b>
+                                    </li>
+                                    <li class="list-group-item">
+                                        Fill in the <span class="highlight">Batch</span> Year. For example, <b>2017</b>
+                                    </li>
+                                    <li class="list-group-item">
+                                        Upload the list of students who have to be tracked under this course. 
+                                        The file (CSV/XLSX) has to be uploaded in the following format:
+                                        <table class="table table-sm table-bordered">
+                                            <tr>
+                                                <th>Name</th><th>Roll Number</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Shreya</td>
+                                                <td>10</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ranesha</td>
+                                                <td>11</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ritwik</td>
+                                                <td>12</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Riya</td>
+                                                <td>13</td>
+                                            </tr>
+                                        </table>
+                                        Any and all tracking done for the student is via the Roll Number.
+                                    </li>
+                                    <li class="list-group-item"><b>Very Important Note:</b> 
+                                        The <span class="highlight">Full Name</span> field in the MS Teams report 
+                                        and the <span class="highlight">Your Roll Number</span> field in the 
+                                        Google Form report should match the <span class="highlight">Roll Number</span>
+                                        field of this student file, not the <span class="highlight">Name</span> field.
+                                    </li>
+                                    <li class="list-group-item">Click on the <span class="highlight">Create Course</span> button.</li>
+                                    <li class="list-group-item">
+                                        Below this button, a status update will be displayed.
+                                        If it's successful, then the course has been added. Otherwise, a 
+                                        message stating the mistake will be shown and you can re-do the process.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+
+                        <div class="tab-pane" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+                            <p class="card-text">
+                                Attendance can be uploaded here and their parsing logic can be 
+                                controlled by a number of features.
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        Navigate to the <span class="highlight">Upload Attendance</span> section of the homepage.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Select the <span class="highlight">Course</span> from the dropdown. All
+                                        identifying details like <span class="highlight">Course ID, Batch</span> will be visible for
+                                        you to clearly identify the course.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Select the <span class="highlight">Date</span> for which attendance has to be tracked (not the date
+                                        on which the upload is being done). This date should match the date in the 
+                                        upload file.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Select the kind of report to be uploaded:
+                                        <ul>
+                                            <li>
+                                                <span class="highlight">MSTeams</span> - this is the downloadable report available on the 
+                                                platform. The format (CSV/XLSX) should be as follows:
+                                                <table class="table table-sm table-bordered">
+                                                    <tr>
+                                                        <th>Full Name</th>
+                                                        <th>User Action</th>
+                                                        <th>Timestamp</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>10</td>
+                                                        <td>Joined</td>
+                                                        <td>11/2/2021, 9:35:35 AM</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>11</td>
+                                                        <td>Joined</td>
+                                                        <td>11/2/2021, 9:40:35 AM</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>10</td>
+                                                        <td>Left</td>
+                                                        <td>11/2/2021, 9:42:35 AM</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>12</td>
+                                                        <td>Joined</td>
+                                                        <td>11/2/2021, 9:50:35 AM</td>
+                                                    </tr>
+                                                </table>
+                                                The parsing logic allows for multiple entries for the same student
+                                                to accomodate disconnections due to technical issues.
+                                            </li>
+                                            <li>
+                                                <span class="highlight">Google Form</span> - responses from a Google form extracted into a 
+                                                CSV or XLSX file are also accepted. The format should be as follows:
+                                                <table class="table table-sm table-bordered">
+                                                    <tr>
+                                                        <th>Timestamp</th>
+                                                        <th>Your Roll Number</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2021/02/25 12:13:03 PM GMT+5:30</td>
+                                                        <td>10</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2021/02/25 12:15:03 PM GMT+5:30</td>
+                                                        <td>11</td>
+                                                    </tr>
+                                                </table>
+                                                <ul>
+                                                    <li>This mode however, disables the <span class="highlight">Threshold</span> feature.</li>
+                                                    <li>Columns can be interchanged. Any extra columns are ignored.</li>
+                                                    <li>Multiple entries for the same student are ignored.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="list-group-item">Upload the file conforming to the format mentioned above.</li>
+                                    <li class="list-group-item">
+                                        Fill in the <span class="highlight">Meeting End Time</span> (applicable only for MS Teams reports). 
+                                        <ul>
+                                            <li>This will be used to track the duration of the class.</li>
+                                            <li>The Meeting Start Time is assumed to be the smallest timestamp in the file.</li>
+                                            <li>Format: 11/2/2020, 9:35:35 AM</li>
+                                        </ul>                                         
+                                    </li>
+                                    <li class="list-group-item">
+                                        Fill in the <span class="highlight">Threshold</span> in seconds (applicable only for MS Teams reports):
+                                        <ul>
+                                            <li>
+                                                This is used to mark students present only if they have 
+                                                been logged into the class for atleast this amount of time.
+                                            </li>
+                                            <li>
+                                                Helps to weed out students who have a log in the upload file only by joining
+                                                and leaving quickly.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="list-group-item">
+                                        Fill in the <span class="highlight">Flagged Roll Numbers</span>:
+                                        <ul>
+                                            <li>
+                                                This is a comma-separated list of roll numbers for whom attendance will not
+                                                be tracked even if they meet the threshold criteria.
+                                            </li>
+                                            <li>
+                                                Helps to forcibly mark those students as absent who the teacher feels was just logged into the class 
+                                                but not listening/active/responsive.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="list-group-item">
+                                        Click on the <span class="highlight">Upload</span> button.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Below this button, a status update will be displayed. If it's successful, then the course has been added. Otherwise, a
+                                        message stating the mistake will be shown and you can re-do the process.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+
+                        <div class="tab-pane" id="download" role="tabpanel" aria-labelledby="download-tab">
+                            <p class="card-text">
+                                The attendance reports uploaded for a course are parsed and collated into one 
+                                single file for the user to consume. There are multiple options you can choose 
+                                from when it comes to downloading these reports.
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"> Navigate to the <span class="highlight">Download Attendance</span> section on the homepage. </li>
+                                    <li class="list-group-item">
+                                        Select the course from the dropdown. All
+                                        identifying details like <span class="highlight">Course ID, Batch</span> will be visible for
+                                        you to clearly identify the course.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Select the kind of report needed: <span class="highlight">Complete</span> shows the complete 
+                                        data for all the days and <span class="highlight">Defaulter</span> shows only the date-wise data
+                                        for students having less than 50% total attendance till the latest date of tracking.
+                                    </li>
+                                    <li class="list-group-item"> Select the format of the report needed: CSV or XLSX.</li>
+                                    <li class="list-group-item"> Click on the <span class="highlight">Download</span> button. </li>
+                                    <li class="list-group-item">
+                                        You will be prompted to save the file renamed as 
+                                        <code><b>CourseID</b>_<b>Batch</b>_asOf_<b>LastTrackingDate</b>.<b>Format</b></code>
+                                        It will also include the <b>Defaulter</b> postfix if that is selected.
+                                    </li>
+                                    <li class="list-group-item">
+                                        The downloaded file for a course with 3 tracked dates will look like the following:
+                                        <table class="table table-sm table-bordered">
+                                            <tr>
+                                                <th>Roll Number</th>
+                                                <th>Date1</th>
+                                                <th>Date2</th>
+                                                <th>Date3</th>
+                                            </tr>
+                                            <tr>
+                                                <td>10</td>
+                                                <td>TRUE</td>
+                                                <td>TRUE</td>
+                                                <td>TRUE</td>
+                                            </tr>
+                                            <tr>
+                                                <td>11</td>
+                                                <td>TRUE</td>
+                                                <td>FALSE</td>
+                                                <td>TRUE</td>
+                                            </tr>
+                                            <tr>
+                                                <td>12</td>
+                                                <td>TRUE</td>
+                                                <td>FALSE</td>
+                                                <td>FALSE</td>
+                                            </tr>
+                                            <tr>
+                                                <td>13</td>
+                                                <td>TRUE</td>
+                                                <td>TRUE</td>
+                                                <td>FALSE</td>
+                                            </tr>
+                                        </table>
+                                        <ul>
+                                            <li>
+                                                These dates are sorted in ascending order, no matter
+                                                the order in which they were uploaded.
+                                            </li>
+                                            <li>
+                                                <b>TRUE</b> indicates that the person was present on that day.
+                                            </li>
+                                            <li>
+                                                The Defaulter list looks the same except it only contains 
+                                                details of the students having less than 50% total attendance till the latest date of tracking.
+                                            </li>
+                                        </ul>                                        
+                                        
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+
+                        <div class="tab-pane" id="delete" role="tabpanel" aria-labelledby="delete-tab">
+                            <p class="card-text">
+                                If you do not wish to track attendance for a course any more, it can be 
+                                deleted. It is an irreversible process and will delete all data and files 
+                                associated with the course. As a fallback, you can download the latest
+                                report before proceeding with the steps below.
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        Navigate to the <span class="highlight">Delete Course</span> section on the homepage.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Select the course you wish to delete from the dropdown. All 
+                                        identifying details like <span class="highlight">Course ID</span> & <span class="highlight">Batch</span> will be visible for
+                                        you to clearly identify the course.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Click on the <span class="highlight">Delete Course</span> button.
+                                    </li>
+                                    <li class="list-group-item">
+                                        Below the button, you will get a confirmatory message.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="static/js/jquery.min.js"></script>
+<script src="static/js/help.js"></script>
+{% endblock %}

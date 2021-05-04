@@ -12,19 +12,8 @@ This app is meant to automate the attendance tracking and maintenance process fo
    - Set the environment variable: **`export FLASK_APP=app.py`**
    - Run the app: **`flask run`**
 
-## FEATURES:
-
-1. Track attendance for multiple courses and maintain it across multiple batches.
-2. Set **duration** - Attendance for only those students will be counted who were present in the meeting for atleast these many seconds to weed out entries which were there only because the student logged into the meeting for a tiny amount of a time.
-3. Add **flagged students**, that is, while uploading an attendance report, mark students (by their _Full Name_ as in the file) to be marked as absent even if they were present for atleast the **duration** as specified above. This makes sure you can weed out those who you feel were simply logged in but weren't responsive/attentive.
-4. Download the latest attendance report showing the attendance status of every student on every tracked date, updated after every upload.
-5. Download the defaulter report showing those students who were not present for atleast 50% of the classes.
-6. Both these files can be downloaded in either XLSX or CSV format. The attendance reports can be uploaded in either format also.
-7. Delete courses (based on their batch) for which you do not wish to keep data for anymore.
-
 ## ASSUMPTIONS:
 
-- Only MS Teams reports having the format (Full Name, User Action, Timestamp) are accepted. Examples are provided in the _test_files_ directory.
 - The _Roll Number_ field provided in the course details file is the same as the _Full Name_ field in the MS Team report. This is extremely important for the attendance tracking to happen.
   As a workaround to this, the _Roll Number_ field can be put the same as the _Name_ in the course details file.
 - Only XLSX and CSV formats are accepted.
@@ -47,6 +36,7 @@ This app is meant to automate the attendance tracking and maintenance process fo
   - _layout.html_ - contains boilerplate HTML code and links to all the static files.
   - _home.html_ - extends _layout.html_ and is shown when the user is logged in.
   - _index.html_ - extends _layout.html_ and is shown when the user is logged out.
+  - help.html\* - extends _layout.html_ and shows the complete guide for using the webapp.
 - **app.py** - contains all the routes needed for the app and the API. It has one extra route not used in the app (_api_signup_) but imperative for the API.
 - **db_util.py** - contains utility functions pertaining to database querying.
 - **decorators.py** - contains decorators created for different kinds of error handling.
@@ -65,5 +55,6 @@ Additionally, the complete documentation for the usage of the API has been inclu
 ## FUTURE SCOPE:
 
 - Take the defaulter cutoff as input
+- Check whether Threshold is less than meeting duration
 - Add JS examples for each endpoint in the API documentation
 - Tighten up security to further prevent unauthorised access

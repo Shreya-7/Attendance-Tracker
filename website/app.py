@@ -10,8 +10,8 @@ import string
 from dateutil import parser
 from uuid import uuid4
 
-from file_util import get_students_from_file, convert_to_csv, parse, make_report, remove_whitespaces, attribute_check
-from db_util import get_courses, generate_token, course_exists, authorised_for_course, get_course_object_id
+from file_util import get_students_from_file, convert_to_csv, make_report, remove_whitespaces, attribute_check, parse_downloaded_report, parse_google_form_result
+from db_util import get_courses, generate_token, course_exists, authorised_for_course, get_course_object_id, save_file_dropbox
 from decorators import login_required, misc_error
 
 app = Flask(__name__, template_folder='templates', static_url_path='/static')
@@ -20,7 +20,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["UPLOAD_FOLDER"] = "./files"
 
-client = MongoClient(plug_mongo_srv_here)
+client = MongoClient('plug_mongo_URL_here')
 teachers = client["attendance-website"]["teacher"]
 courses = client["attendance-website"]["course"]
 students = client["attendance-website"]["student"]
@@ -95,8 +95,13 @@ def upload_attendance():
     form_data = remove_whitespaces(form_data)
 
     # check if all the attributes based in the FormData object are okay
+    attributes = ['course_id', 'batch', 'date', 'input_mode']
+
+    # add attributes based on input type
+    if form_data['input_mode'] == '1':
+        attributes += ['end-time', 'threshold']
     attribute_check_result = attribute_check(
-        ['course_id', 'batch', 'end-time', 'threshold', 'date'], form_data, extras=['flags', 'course'])
+        attributes, form_data, extras=['flags', 'course'])
     if attribute_check_result != True:
         return make_response(jsonify({
             'error': attribute_check_result
@@ -132,22 +137,31 @@ def upload_attendance():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], "Test.csv")
 
     flagged = [x.strip() for x in form_data['flags'].split(',')]
+    if '' in flagged:
+        flagged.remove('')
     date = form_data['date']
 
-    if date != str(parser.parse(form_data['end-time'], dayfirst=True).date()):
+    if form_data['input_mode'] == '1' and date != str(parser.parse(form_data['end-time'], dayfirst=True).date()):
 
         return make_response(jsonify({
             'error': 'Different dates given for Attendance Date and Meeting End Time'
         }), 400)
 
     # get extracted student data from the file
-    students = parse(form_data['end-time'],
-                     int(form_data['threshold']), file_path)
+
+    if form_data['input_mode'] == '0':
+        students = parse_google_form_result(form_data['date'], file_path)
+    else:
+        students = parse_downloaded_report(form_data['end-time'],
+                                           int(form_data['threshold']), file_path)
 
     if isinstance(students, str):
         return make_response(jsonify({
             'error': students
         }), 400)
+
+    # upload the file to dropbox
+    save_file_dropbox(get_user_email(form_data), file_path, file.filename)
 
     # remove the uploaded file
     os.remove(file_path)
@@ -162,14 +176,19 @@ def upload_attendance():
 
     course_students = course['students'].keys()
 
-    # add this date to the dates that have been tracked for this course
-    courses.update_one({
-        'course_id': form_data['course_id'],
-        'batch': form_data['batch']}, {
-            '$push': {
-                'dates': date
-            }
-    })
+    for roll in students.keys():
+        if roll not in course_students:
+            return make_response(jsonify({
+                'error': f'Roll {roll} mentioned in the report has not been added to this course.'
+            }), 400)
+
+    # check if flagged students are enrolled in the course
+    if len(flagged) > 0:
+        for roll in flagged:
+            if roll not in course_students:
+                return make_response(jsonify({
+                    'error': f'Roll {roll} mentioned in the flags has not been added to this course.'
+                }), 400)
 
     # update every student
 
@@ -190,6 +209,15 @@ def upload_attendance():
                 f'students.{student_id}.{date}': status
             }
         })
+
+    # add this date to the dates that have been tracked for this course
+    courses.update_one({
+        'course_id': form_data['course_id'],
+        'batch': form_data['batch']}, {
+            '$push': {
+                'dates': date
+            }
+    })
 
     return make_response(jsonify({
         'message': 'Godspeed.'
@@ -411,6 +439,11 @@ def api_signup():
     return make_response(jsonify({
         'token': form_data['token']
     }), 200)
+
+
+@app.route("/help")
+def help():
+    return render_template('help.html')
 
 
 @ app.route("/login", methods=["POST"])

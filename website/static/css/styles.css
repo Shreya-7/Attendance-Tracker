@@ -5,6 +5,7 @@ nav {
 .nav-link.active {
   background-color: #6cdaee;
   border-radius: 5px;
+  margin: 2px;
 }
 
 .text-left.welcome-text {
@@ -52,4 +53,28 @@ a {
 
 #hide_this_input {
   display: none;
+}
+
+.help-container {
+  margin: 20px 40px;
+}
+
+#help-list h5 {
+  font-weight: bold;
+  color: #6cdaee;
+}
+
+.help-container table {
+  margin-top: 20px;
+}
+
+code {
+  margin-left: 3px;
+  margin-right: 3px;
+  color: #026670;
+}
+
+.highlight {
+  color: #026670;
+  font-weight: bold;
 }

@@ -127,6 +127,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
         });
         return false;
     }
+
+    document.querySelector('#gform').addEventListener('click', ()=>{
+        document.querySelector('#end-time').disabled = true;
+        document.querySelector('#threshold').disabled = true;
+        document.querySelector('#end-time').value = '';
+        document.querySelector('#threshold').value = '';
+    });
+    document.querySelector('#teams').addEventListener('click', ()=>{
+        document.querySelector('#end-time').disabled = false;
+        document.querySelector('#threshold').disabled = false;
+    });
 });
 
 

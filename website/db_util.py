@@ -2,6 +2,7 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 import random
 import string
+import dropbox
 
 
 def generate_token(teachers: MongoClient) -> str:
@@ -96,3 +97,21 @@ def get_courses(email: str, teachers: MongoClient, courses: MongoClient) -> list
         course.pop("_id")
         user_courses.append(course)
     return user_courses
+
+
+def save_file_dropbox(email: str, file_path: str, file_name: str):
+    """
+        Upload user input files to Dropbox in the user folder.
+
+        :param email: Teacher email - used as user folder name
+        :param file_path: File path from where the file has to be taken
+        :param courses: File name
+    """
+    access_token = 'plug_dropbox_token_here'
+
+    # destination folder and file path
+    dest = f'/{email}/{file_name}'
+    dbx = dropbox.Dropbox(access_token)
+
+    with open(file_path, 'rb') as f:
+        dbx.files_upload(f.read(), dest, autorename=True)

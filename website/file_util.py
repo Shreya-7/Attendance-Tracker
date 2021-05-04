@@ -52,10 +52,63 @@ def convert_to_csv(filepath: str):
         col.writerow([cell.value for cell in r])
 
 
-def parse(end_time: str, threshold: int, file_path="files/Test.csv") -> dict:
+def parse_google_form_result(date: str, file_path="files/Test.csv") -> dict:
     """
-        Parse given CSV attendance file. Includes checks for headings, different timestamps,
-        empty student list & invalid end_time.
+        Parse given CSV attendance file for the Google Forms report. 
+        Includes checks for headings, different timestamps & empty student list.
+
+        :param date: The meeting date
+        :return students: Dictionary with student roll number (as given in the file) as key
+        and tuple (date, Boolean) as value
+    """
+
+    students = {}
+    with open(file_path, mode='r') as csv_file:
+
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+
+        # process the file
+
+        for row in csv_reader:
+            if line_count == 0:  # heading row
+
+                if row != ['Timestamp', 'Username', 'Your Name', 'Your Roll Number']:
+                    return 'Wrong headings'
+
+                # find indexes so that column exchange is permitted
+                roll_index = row.index('Your Roll Number')
+                timestamp_index = row.index('Timestamp')
+
+            else:
+
+                student_id = str(int(row[roll_index].split('.')[0]))
+                timestamp = parser.parse(row[timestamp_index], dayfirst=True)
+
+                extracted_date = timestamp.date()  # extract date
+                print(extracted_date, date)
+
+                # check to see if all dates in the file are consistent
+                if extracted_date != parser.parse(date, dayfirst=True).date():
+
+                    return 'Different dates. Wut.'
+
+                # mark student in the file as present
+                students[student_id] = (date, True)
+
+            line_count += 1
+
+    # empty file check
+    if len(students) < 1:
+        return 'There are no students present in this file.'
+
+    return(students)
+
+
+def parse_downloaded_report(end_time: str, threshold: int, file_path="files/Test.csv") -> dict:
+    """
+        Parse given CSV attendance file for the MS Teams Attendance report. 
+        Includes checks for headings, different timestamps, empty student list & invalid end_time.
 
         :param end_time: The meeting end timestamp
         :param threshold: Seconds of activity required to be marked as present
@@ -174,7 +227,8 @@ def make_report(course: dict, file_path: str, type: int, format: int) -> tuple:
 
     # fields in the result file will Roll Number, date1, date2....
     fields = ['Roll Number']
-    fields.extend(course['dates'])
+    dates = sorted(course['dates'])
+    fields.extend(dates)
     rows = []
 
     for key, value in course['students'].items():
@@ -186,7 +240,7 @@ def make_report(course: dict, file_path: str, type: int, format: int) -> tuple:
         else:
 
             # number of date columns
-            total_days = len(course['dates'])
+            total_days = len(dates)
 
             # number of present days
             days_attended = len([x for x, y in value.items() if y is True])
@@ -198,8 +252,8 @@ def make_report(course: dict, file_path: str, type: int, format: int) -> tuple:
 
                 # create row to be appended - roll, present1, present2...
                 row = [key]
-                for date, present in value.items():
-                    row.append(present)
+                for date in dates:
+                    row.append(value[date])
 
                 rows.append(row)
 

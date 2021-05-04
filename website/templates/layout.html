@@ -16,22 +16,30 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('index') }}">Attendance Tracker</a>
 
-            {% if logged_in %}
+            
 
-                <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="collapse navbar-collapse" id="navcol-1">
-                    <ul class="nav navbar-nav ml-auto">
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('help') }}">Help</a>
+                    </li>
+                    {% if logged_in %}
                         <li class="nav-item">
                             <a class="nav-link active" href="{{ url_for('logout') }}">Logout</a>
                         </li>
-                    </ul>
-                </div>
 
-            {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+
         </div>
     </nav>
 
