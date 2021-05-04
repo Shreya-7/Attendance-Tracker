@@ -2,12 +2,13 @@ This app is meant to automate the attendance tracking and maintenance process fo
 
 ## RUNNING THE APP:
 
-1. Change the directory: **`cd website`**
-2. Run via Docker (or go to step 3):
+1. Run via Docker (or go to step 2):
    - **Note**: This process will take up 1.03 GB of data. Also, use `sudo` with the docker commands if you are getting a permissions error.
    - Build the image: **`docker build . -t attendance_image`**
    - Run the container: **`docker run -p 5000:5000 attendance_image`**
-3. Run manually:
+2. Run manually:
+   - **Note**: It is recommended that you do the following inside a virtual environment so that the dependencies don't mess up your system. A very easy and simple [guide](https://realpython.com/python-virtual-environments-a-primer/#using-virtual-environments) you can follow to set it up.
+   - Change the directory: **`cd website`**
    - Install dependencies: **`pip3 install -r requirements.txt`**
    - Set the environment variable: **`export FLASK_APP=app.py`**
    - Run the app: **`flask run`**
