@@ -15,7 +15,7 @@ This app is meant to automate the attendance tracking and maintenance process fo
 
 ## ASSUMPTIONS:
 
-- The _Roll Number_ field provided in the course details file is the same as the _Full Name_ field in the MS Team report. This is extremely important for the attendance tracking to happen.
+- The _Roll Number_ field provided in the course details file is the same as the _Full Name_ field in the MS Team report and the _Your Roll Number_ field in the Google Form responses. This is extremely important for the attendance tracking to happen.
   As a workaround to this, the _Roll Number_ field can be put the same as the _Name_ in the course details file.
 - Only XLSX and CSV formats are accepted.
 - A course is distinguished by a combination of its ID _and_ Batch. For example, a course **CS50** can have multiple entries, distinguished by its _batch_ year (like 2016, 2017 etc)
