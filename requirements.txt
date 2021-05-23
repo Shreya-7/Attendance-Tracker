@@ -1,0 +1,8 @@
+openpyxl==3.0.6
+pandas==1.1.4
+pymongo==3.7.2
+Flask_Cors==3.0.3
+Flask==1.1.2
+python_dateutil==2.8.1
+dnspython==2.0.0
+dropbox==11.7.0
