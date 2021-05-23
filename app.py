@@ -20,7 +20,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["UPLOAD_FOLDER"] = "./files"
 
-client = MongoClient(os.getenv(MONGO_DB_URL))
+client = MongoClient(os.getenv('MONGO_DB_URL'))
 teachers = client["attendance-website"]["teacher"]
 courses = client["attendance-website"]["course"]
 students = client["attendance-website"]["student"]
