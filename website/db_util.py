@@ -107,7 +107,7 @@ def save_file_dropbox(email: str, file_path: str, file_name: str):
         :param file_path: File path from where the file has to be taken
         :param courses: File name
     """
-    access_token = 'plug_dropbox_token_here'
+    access_token = DROPBOX_ACCESS_TOKEN
 
     # destination folder and file path
     dest = f'/{email}/{file_name}'
