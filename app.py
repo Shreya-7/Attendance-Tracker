@@ -342,7 +342,7 @@ def add_course():
             'error': 'A course with this Course ID for this batch already exists.'
         }), 400)
 
-    if form_data['batch'] < 0:
+    if form_data['batch'] < '0':
         return make_response(jsonify({
             'error': 'Negative batch year? Really?'
         }), 400)
