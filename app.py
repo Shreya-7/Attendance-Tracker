@@ -342,6 +342,11 @@ def add_course():
             'error': 'A course with this Course ID for this batch already exists.'
         }), 400)
 
+    if form_data['batch'] < 0:
+        return make_response(jsonify({
+            'error': 'Negative batch year? Really?'
+        }), 400)
+
     # save the uploaded course file
     file = request.files.get('file')
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
