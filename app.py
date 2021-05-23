@@ -10,7 +10,7 @@ import string
 from dateutil import parser
 from uuid import uuid4
 
-from file_util import get_students_from_file, convert_to_csv, make_report, remove_whitespaces, attribute_check, parse_downloaded_report, parse_google_form_result
+from file_util import check_extension, get_students_from_file, convert_to_csv, make_report, remove_whitespaces, attribute_check, parse_downloaded_report, parse_google_form_result
 from db_util import get_courses, generate_token, course_exists, authorised_for_course, get_course_object_id, save_file_dropbox
 from decorators import login_required, misc_error
 
@@ -130,6 +130,12 @@ def upload_attendance():
 
     filename, extension = file.filename.split('.')
 
+    filename_check = check_extension(file.filename)
+    if filename_check != True:
+        return make_response(jsonify({
+            'error': filename_check
+        }), 400)
+
     # if the uploaded file is in XLSX format, convert to CSV, save & delete old file
     if extension != 'csv':
         convert_to_csv(file_path)
@@ -244,7 +250,9 @@ def download_attendance():
         ),
         app.config['UPLOAD_FOLDER'],
         int(request.form.get('report_type')),
-        int(request.form.get('report_format')))
+        int(request.form.get('report_format')),
+        students
+    )
 
     if status == False:
         return make_response(jsonify({
@@ -351,6 +359,12 @@ def add_course():
     file = request.files.get('file')
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
+
+    filename_check = check_extension(file.filename)
+    if filename_check != True:
+        return make_response(jsonify({
+            'error': filename_check
+        }), 400)
 
     # get extracted student details from the course file
     course_students = get_students_from_file(file_path)

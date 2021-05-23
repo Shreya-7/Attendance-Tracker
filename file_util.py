@@ -3,6 +3,16 @@ import openpyxl
 import pandas as pd
 
 from dateutil import parser
+from db_util import get_name
+
+
+def check_extension(filename):
+    filename, extension = filename.split('.')
+
+    if extension not in ['csv', 'xlsx']:
+        return "Please upload a CSV or XLSX file only _/\_"
+
+    return True
 
 
 def get_students_from_file(file_path: str) -> list:
@@ -35,6 +45,7 @@ def get_students_from_file(file_path: str) -> list:
 
             line_count += 1
 
+    students.sort(key=lambda x: x[0])
     return students
 
 
@@ -111,7 +122,7 @@ def parse_downloaded_report(end_time: str, threshold: int, file_path="files/Test
         Includes checks for headings, different timestamps, empty student list & invalid end_time.
 
         :param end_time: The meeting end timestamp
-        :param threshold: Seconds of activity required to be marked as present
+        :param threshold: Minutes of activity required to be marked as present
         :return students: Dictionary with student roll number (as given in the file) as key
         and tuple (date, Boolean) as value
     """
@@ -193,7 +204,7 @@ def parse_downloaded_report(end_time: str, threshold: int, file_path="files/Test
         value['duration'] = int(value['duration'])
 
         # threshold logic
-        if value['duration'] > threshold:
+        if value['duration']/60 > threshold:
             students[key] = (date, True)
         else:
             students[key] = (date, False)
@@ -205,7 +216,7 @@ def parse_downloaded_report(end_time: str, threshold: int, file_path="files/Test
     return(students)
 
 
-def make_report(course: dict, file_path: str, type: int, format: int) -> tuple:
+def make_report(course: dict, file_path: str, type: int, format: int, students) -> tuple:
     """
         Create attendance report file for the given course details and file specs.
         Includes check for empty file and missing data.
@@ -225,11 +236,12 @@ def make_report(course: dict, file_path: str, type: int, format: int) -> tuple:
     if course['students'] is None:
         return 'This course has no students enrolled?', False
 
-    # fields in the result file will Roll Number, date1, date2....
-    fields = ['Roll Number']
+    # fields in the result file will Sl. No., Roll Number, Name, date1, date2....
+    fields = ['Sl. No.', 'Roll Number', 'Name']
     dates = sorted(course['dates'])
     fields.extend(dates)
     rows = []
+    sl = 1
 
     for key, value in course['students'].items():
 
@@ -248,17 +260,19 @@ def make_report(course: dict, file_path: str, type: int, format: int) -> tuple:
             # add this student to the file only if it is a regular report
             # or the attendance is less than 50% for a defaulter report
 
-            if type == 1 or (type == 0 and (days_attended/total_days) < 0.50):
+            if type == 1 or (type == 0 and (days_attended/total_days) < 0.75):
 
-                # create row to be appended - roll, present1, present2...
-                row = [key]
+                # create row to be appended - sl no, roll, name, present1, present2...
+                row = [sl, key, get_name(students, key)['name']]
                 for date in dates:
-                    row.append(value[date])
+                    status = ['Present', 'Absent'][value[date] == False]
+                    row.append(status)
 
                 rows.append(row)
+                sl += 1
 
     # name of the result report
-    filename = f'{course["course_id"]}_{course["batch"]}_asOf_{max(fields[1:])}'
+    filename = f'{course["course_id"]}_{course["batch"]}_asOf_{max(fields[3:])}'
     if type == 0:
         filename += '(Defaulter)'
 

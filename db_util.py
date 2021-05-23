@@ -116,3 +116,11 @@ def save_file_dropbox(email: str, file_path: str, file_name: str):
 
     with open(file_path, 'rb') as f:
         dbx.files_upload(f.read(), dest, autorename=True)
+
+
+def get_name(students: MongoClient, key: str):
+    student = students.find_one({
+        'roll': key
+    })
+    student.pop('_id')
+    return student
