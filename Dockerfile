@@ -1,5 +1,5 @@
 FROM python:3
-COPY ./website  /attendance
+COPY . /attendance
 WORKDIR /attendance
 
 # set environment variables  
