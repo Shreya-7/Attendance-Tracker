@@ -8,7 +8,6 @@ This app is meant to automate the attendance tracking and maintenance process fo
    - Run the container: **`docker run -p 5000:5000 attendance_image`**
 2. Run manually:
    - **Note**: It is recommended that you do the following inside a virtual environment so that the dependencies don't mess up your system. A very easy and simple [guide](https://realpython.com/python-virtual-environments-a-primer/#using-virtual-environments) you can follow to set it up.
-   - Change the directory: **`cd website`**
    - Install dependencies: **`pip3 install -r requirements.txt`**
    - Set the environment variable: **`export FLASK_APP=app.py`**
    - Run the app: **`flask run`**
@@ -25,8 +24,6 @@ This app is meant to automate the attendance tracking and maintenance process fo
 ## FILE INFO:
 
 - **Dockerfile** - used to containerise this app.
-
-**In the website directory**:
 
 - **files** - is the standard upload directory configured in the app. It is used as temporary store for all uploaded and created files. It is refreshed every time the _index_ route is visited.
 - **static** - contains all the static assets used in the app (CSS & JS files)
