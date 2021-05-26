@@ -8,21 +8,24 @@ from db_util import Database
 
 
 class UploadedFile:
-
     """
     Hold generic uploaded files info and functions
     """
-
     def __init__(self, file_path, file_name, db_obj):
         self.file_path = file_path
         self.file_name = file_name
         self.db_obj = db_obj
 
         self.student_headings = ["Roll Number", "Name"]
-        self.gform_headings = ["Timestamp", "Username", "Your Name", "Your Roll Number"]
+        self.gform_headings = [
+            "Timestamp", "Username", "Your Name", "Your Roll Number"
+        ]
         self.teams_headings = ["Full Name", "User Action", "Timestamp"]
 
-    def heading_check(self, required_headings: list, file_headings: list, strictness=1):
+    def heading_check(self,
+                      required_headings: list,
+                      file_headings: list,
+                      strictness=1):
         """
         Check whether the `file_headings` match with the `required_headings`.
         :param `required_headings`: list of strings
@@ -71,9 +74,10 @@ class UploadedFile:
         for r in sheet.rows:
             col.writerow([cell.value for cell in r])
 
-    def two_way_heading_check(
-        self, required_headings: list, form_headings: list, extras=[]
-    ) -> bool:
+    def two_way_heading_check(self,
+                              required_headings: list,
+                              form_headings: list,
+                              extras=[]) -> bool:
         """
         Check whether the elements in attributes & extras are present in the keys of
         form_data and vice versa.
@@ -133,16 +137,15 @@ class StudentFile(UploadedFile):
 
                     head = row
 
-                    check_result = self.heading_check(
-                        self.student_headings, head, strictness=0
-                    )
+                    check_result = self.heading_check(self.student_headings,
+                                                      head,
+                                                      strictness=0)
                     if check_result is not True:
                         return check_result
 
                     # track index so that Name, Roll and Roll, Name both formats are accepted
-                    roll_index, name_index = head.index("Roll Number"), head.index(
-                        "Name"
-                    )
+                    roll_index, name_index = head.index(
+                        "Roll Number"), head.index("Name")
 
                 else:
 
@@ -176,7 +179,8 @@ class GoogleFormFile(UploadedFile):
                     timestamp_index = row.index("Timestamp")
 
                 else:
-                    timestamp = parser.parse(row[timestamp_index], dayfirst=True)
+                    timestamp = parser.parse(row[timestamp_index],
+                                             dayfirst=True)
 
                     extracted_date = timestamp.date()  # extract date
                     dates.append(extracted_date)
@@ -227,7 +231,8 @@ class GoogleFormFile(UploadedFile):
                 else:
 
                     student_id = str(int(row[roll_index].split(".")[0]))
-                    timestamp = parser.parse(row[timestamp_index], dayfirst=True)
+                    timestamp = parser.parse(row[timestamp_index],
+                                             dayfirst=True)
 
                     extracted_date = timestamp.date()  # extract date
 
@@ -290,9 +295,10 @@ class TeamsFile(UploadedFile):
             self.date = str(dates[0])
             return self.date, True
 
-    def parse_downloaded_report(
-        self, end_time: str, threshold: int, file_path="files/Test.csv"
-    ) -> dict:
+    def parse_downloaded_report(self,
+                                end_time: str,
+                                threshold: int,
+                                file_path="files/Test.csv") -> dict:
         """
         Parse given CSV attendance file for the MS Teams Attendance report.
         Includes checks for headings, different timestamps, empty student list & invalid end_time.
@@ -329,7 +335,8 @@ class TeamsFile(UploadedFile):
                     if student_id not in students.keys():
                         students[student_id] = {
                             "action": 1,  # first entry is always 'Join'
-                            "duration": 0,  # in seconds, 0 since 'Left' has not been encountered yet
+                            "duration":
+                            0,  # in seconds, 0 since 'Left' has not been encountered yet
                             "time": timestamp,
                         }
 
@@ -343,7 +350,8 @@ class TeamsFile(UploadedFile):
 
                             # update student status to 'Left'
                             students[student_id]["action"] = 0
-                            students[student_id]["duration"] += (a - b).total_seconds()
+                            students[student_id]["duration"] += (
+                                a - b).total_seconds()
 
                             # update 'last seen' timestamp
                             students[student_id]["time"] = timestamp
@@ -367,9 +375,8 @@ class TeamsFile(UploadedFile):
 
             # update duration if the file did not contain 'Left' data for a student
             if value["action"] == 1:
-                value["duration"] += (
-                    parser.parse(end_time, dayfirst=True) - value["time"]
-                ).total_seconds()
+                value["duration"] += (parser.parse(end_time, dayfirst=True) -
+                                      value["time"]).total_seconds()
 
             value["duration"] = int(value["duration"])
 
@@ -387,7 +394,8 @@ class TeamsFile(UploadedFile):
 
 
 class Report:
-    def __init__(self, folder_path: str, db_obj: Database, type: int, format: int):
+    def __init__(self, folder_path: str, db_obj: Database, type: int,
+                 format: int):
         """
         :param `folder_path`: The application's configured upload folder (.files) where the file
         will be stored
@@ -479,9 +487,8 @@ class Report:
                 # add this student to the file only if it is a regular report
                 # or the attendance is less than 50% for a defaulter report
 
-                if self.type == 1 or (
-                    self.type == 0 and (days_attended / total_days) < 0.75
-                ):
+                if self.type == 1 or (self.type == 0 and
+                                      (days_attended / total_days) < 0.75):
 
                     # create row to be appended - sl no, roll, name, present1, present2...
                     row = [sl, key, self.db_obj.get_name(key)["name"]]

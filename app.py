@@ -105,8 +105,8 @@ def upload_attendance():
         form_data = request.form.to_dict()
     except:
         return make_response(
-            jsonify({"error": "This route only accepts a FormData object."}), 400
-        )
+            jsonify({"error": "This route only accepts a FormData object."}),
+            400)
 
     form_data = remove_whitespaces(form_data)
 
@@ -131,11 +131,13 @@ def upload_attendance():
 
         check_extension_result = generic_file_obj.check_extension()
         if check_extension_result != True:
-            return make_response(jsonify({"error": check_extension_result}), 400)
+            return make_response(jsonify({"error": check_extension_result}),
+                                 400)
 
         if extension != "csv":
 
-            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename + ".csv")
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"],
+                                     filename + ".csv")
             generic_file_obj.convert_to_csv(result_path=file_path)
             generic_file_obj.file_path = file_path
 
@@ -146,11 +148,10 @@ def upload_attendance():
 
                 if file_type != 0:
                     return make_response(
-                        jsonify(
-                            {
-                                "error": "The report you have uploaded does not conform to the format for Google Form."
-                            }
-                        ),
+                        jsonify({
+                            "error":
+                            "The report you have uploaded does not conform to the format for Google Form."
+                        }),
                         400,
                     )
 
@@ -160,11 +161,10 @@ def upload_attendance():
 
                 if file_type != 1:
                     return make_response(
-                        jsonify(
-                            {
-                                "error": "The report you have uploaded does not conform to the format for MS Teams."
-                            }
-                        ),
+                        jsonify({
+                            "error":
+                            "The report you have uploaded does not conform to the format for MS Teams."
+                        }),
                         400,
                     )
                 file_obj = TeamsFile(file_path, file.filename, db_obj)
@@ -179,11 +179,10 @@ def upload_attendance():
 
             else:
                 return make_response(
-                    jsonify(
-                        {
-                            "error": "Report(s) uploaded do not conform to either formats - Google Form or MS Teams."
-                        }
-                    ),
+                    jsonify({
+                        "error":
+                        "Report(s) uploaded do not conform to either formats - Google Form or MS Teams."
+                    }),
                     400,
                 )
 
@@ -214,15 +213,15 @@ def upload_attendance():
                 if date != str(parser.parse(end_time, dayfirst=True).date()):
 
                     return make_response(
-                        jsonify(
-                            {
-                                "error": "Different dates present in File and Meeting End Time"
-                            }
-                        ),
+                        jsonify({
+                            "error":
+                            "Different dates present in File and Meeting End Time"
+                        }),
                         400,
                     )
 
-            students = file_obj.parse_downloaded_report(end_time, threshold, file_path)
+            students = file_obj.parse_downloaded_report(
+                end_time, threshold, file_path)
 
         if isinstance(students, str):
             return make_response(jsonify({"error": students}), 400)
@@ -234,9 +233,10 @@ def upload_attendance():
 
         if date in course["dates"]:
             return make_response(
-                jsonify(
-                    {"error": "Attendance for this date has already been recorded."}
-                ),
+                jsonify({
+                    "error":
+                    "Attendance for this date has already been recorded."
+                }),
                 400,
             )
 
@@ -245,11 +245,10 @@ def upload_attendance():
         for roll in students.keys():
             if roll not in course_students:
                 return make_response(
-                    jsonify(
-                        {
-                            "error": f"Roll {roll} mentioned in the report has not been added to this course."
-                        }
-                    ),
+                    jsonify({
+                        "error":
+                        f"Roll {roll} mentioned in the report has not been added to this course."
+                    }),
                     400,
                 )
 
@@ -258,17 +257,17 @@ def upload_attendance():
             for roll in flagged:
                 if roll not in course_students:
                     return make_response(
-                        jsonify(
-                            {
-                                "error": f"Roll {roll} mentioned in the flags has not been added to this course."
-                            }
-                        ),
+                        jsonify({
+                            "error":
+                            f"Roll {roll} mentioned in the flags has not been added to this course."
+                        }),
                         400,
                     )
 
         # update every student and the course
 
-        db_obj.update_course_after_parse(course_students, students, flagged, date)
+        db_obj.update_course_after_parse(course_students, students, flagged,
+                                         date)
 
         dates.append(date)
 
@@ -289,7 +288,8 @@ def download_attendance():
     # check if course exists
     course_existence = db_obj.course_exists()
     if course_existence == False:
-        return make_response(jsonify({"error": "This course does not exist"}), 400)
+        return make_response(jsonify({"error": "This course does not exist"}),
+                             400)
 
     report_obj = Report(
         app.config["UPLOAD_FOLDER"],
@@ -305,9 +305,9 @@ def download_attendance():
         return make_response(jsonify({"error": filename}), 401)
 
     # send the created report
-    return send_from_directory(
-        app.config["UPLOAD_FOLDER"], filename, as_attachment=True
-    )
+    return send_from_directory(app.config["UPLOAD_FOLDER"],
+                               filename,
+                               as_attachment=True)
 
 
 @app.route("/delete_course", methods=["POST"])
@@ -317,15 +317,15 @@ def delete_course():
         form_data = request.form.to_dict()
     except:
         return make_response(
-            jsonify({"error": "This route only accepts a FormData object."}), 400
-        )
+            jsonify({"error": "This route only accepts a FormData object."}),
+            400)
 
     form_data = remove_whitespaces(form_data)
 
     # check if all the attributes based in the FormData object are okay
-    attribute_check_result = attribute_check(
-        ["course_id", "batch"], form_data, extras=["course"]
-    )
+    attribute_check_result = attribute_check(["course_id", "batch"],
+                                             form_data,
+                                             extras=["course"])
     if attribute_check_result != True:
         return make_response(jsonify({"error": attribute_check_result}), 400)
 
@@ -339,7 +339,8 @@ def delete_course():
     # check if the course exists
     course_existence = db_obj.course_exists()
     if course_existence == False:
-        return make_response(jsonify({"error": "This course does not exist."}), 400)
+        return make_response(jsonify({"error": "This course does not exist."}),
+                             400)
 
     db_obj.delete_course()
 
@@ -354,15 +355,14 @@ def add_course():
         form_data = request.form.to_dict()
     except:
         return make_response(
-            jsonify({"error": "This route only accepts a FormData object."}), 400
-        )
+            jsonify({"error": "This route only accepts a FormData object."}),
+            400)
 
     form_data = remove_whitespaces(form_data)
 
     # check if all the attributes based in the FormData object are okay
     attribute_check_result = attribute_check(
-        ["course_id", "course_name", "batch"], form_data
-    )
+        ["course_id", "course_name", "batch"], form_data)
     if attribute_check_result != True:
         return make_response(jsonify({"error": attribute_check_result}), 400)
 
@@ -372,16 +372,16 @@ def add_course():
     course_existence = db_obj.course_exists()
     if course_existence == True:
         return make_response(
-            jsonify(
-                {"error": "A course with this Course ID for this batch already exists."}
-            ),
+            jsonify({
+                "error":
+                "A course with this Course ID for this batch already exists."
+            }),
             400,
         )
 
     if form_data["batch"] < "0":
         return make_response(
-            jsonify({"error": "Negative batch year is not permissible."}), 400
-        )
+            jsonify({"error": "Negative batch year is not permissible."}), 400)
 
     # save the uploaded course file
     file = request.files.get("file")
@@ -408,9 +408,11 @@ def add_course():
         existing = students.find_one({"roll": student[0]})
 
         if existing is None:
-            inserted_student = students.insert_one(
-                {"roll": student[0], "name": student[1], "batch": form_data["batch"]}
-            )
+            inserted_student = students.insert_one({
+                "roll": student[0],
+                "name": student[1],
+                "batch": form_data["batch"]
+            })
 
         # add the student roll number to the course data
         form_data["students"][student[0]] = {}
@@ -435,7 +437,9 @@ def add_course():
     # add the course ID to the teacher's data
     teachers.update_one(
         {"email": session["user"]["email"]},
-        {"$addToSet": {"courses": db_obj.get_course_object_id()}},
+        {"$addToSet": {
+            "courses": db_obj.get_course_object_id()
+        }},
     )
     return make_response(jsonify({"course": form_data}), 200)
 
@@ -447,13 +451,14 @@ def api_signup():
         form_data = request.form.to_dict()
     except:
         return make_response(
-            jsonify({"error": "This route only accepts a FormData object."}), 400
-        )
+            jsonify({"error": "This route only accepts a FormData object."}),
+            400)
 
     form_data = remove_whitespaces(form_data)
 
     # check if all the attributes based in the FormData object are okay
-    attribute_check_result = attribute_check(["name", "email", "password"], form_data)
+    attribute_check_result = attribute_check(["name", "email", "password"],
+                                             form_data)
     if attribute_check_result != True:
         return make_response(jsonify({"error": attribute_check_result}), 400)
 
@@ -461,12 +466,10 @@ def api_signup():
     user = teachers.find_one({"email": request.form.get("email")})
     if user != None:
         return make_response(
-            jsonify(
-                {
-                    "error": "A user with this email has already registered with this API."
-                }
-            )
-        )
+            jsonify({
+                "error":
+                "A user with this email has already registered with this API."
+            }))
 
     # generate a unique token for this new user
     form_data["token"] = client_obj.generate_token(teachers)

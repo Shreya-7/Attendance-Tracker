@@ -8,12 +8,10 @@ from pymongo import MongoClient
 
 
 class Clients:
-
     """
     Holds MongoDB client URLs and generic functions not related to any course.
     This is specific for a session - that is, a teacher.
     """
-
     def __init__(self, students, teachers, courses):
         self.students = students
         self.teachers = teachers
@@ -57,12 +55,10 @@ class Clients:
 
 
 class Database:
-
     """
     Holds context for one single course, for one batch for that particular teacher.
     # TODO: name can probably be changed to something more apt
     """
-
     def __init__(self, clients: Clients, course_id: str, batch: str):
         self.students = clients.students
         self.teachers = clients.teachers
@@ -78,10 +74,9 @@ class Database:
         :return `True` if authorised, an error string if not.
         """
 
-        if (
-            self.get_course_object_id()
-            not in self.teachers.find_one({"email": self.email})["courses"]
-        ):
+        if (self.get_course_object_id()
+                not in self.teachers.find_one({"email":
+                                               self.email})["courses"]):
             return "You cannot delete this course as you are not its owner."
 
         return True
@@ -93,10 +88,10 @@ class Database:
         """
 
         course_object_id = str(
-            self.courses.find_one({"course_id": self.course_id, "batch": self.batch})[
-                "_id"
-            ]
-        )
+            self.courses.find_one({
+                "course_id": self.course_id,
+                "batch": self.batch
+            })["_id"])
 
         return course_object_id
 
@@ -106,9 +101,10 @@ class Database:
         :return `True` if exists, an error string if not.
         """
 
-        course = self.courses.find_one(
-            {"course_id": self.course_id, "batch": self.batch}
-        )
+        course = self.courses.find_one({
+            "course_id": self.course_id,
+            "batch": self.batch
+        })
 
         if course is None:
             return "Course does not exist!"
@@ -145,9 +141,10 @@ class Database:
         :return `course`: MongoDB result minus the id
         """
 
-        course = self.courses.find_one(
-            {"course_id": self.course_id, "batch": self.batch}
-        )
+        course = self.courses.find_one({
+            "course_id": self.course_id,
+            "batch": self.batch
+        })
 
         course.pop("_id")
 
@@ -159,16 +156,18 @@ class Database:
         """
 
         self.teachers.update_one(
-            {"email": self.email}, {"$pull": {"courses": self.get_course_object_id()}}
-        )
+            {"email": self.email},
+            {"$pull": {
+                "courses": self.get_course_object_id()
+            }})
 
-        result = self.courses.delete_one(
-            {"course_id": self.course_id, "batch": self.batch}
-        )
+        result = self.courses.delete_one({
+            "course_id": self.course_id,
+            "batch": self.batch
+        })
 
-    def update_course_after_parse(
-        self, course_students: list, students: list, flagged: list, date: str
-    ):
+    def update_course_after_parse(self, course_students: list, students: list,
+                                  flagged: list, date: str):
         """
         Updates the course with student records & dates
         :param `course_students`: List of roll numbers of students enrolled in the course
@@ -187,12 +186,22 @@ class Database:
                 status = students[student_id][1]
 
             self.courses.update_one(
-                {"course_id": self.course_id, "batch": self.batch},
-                {"$set": {f"students.{student_id}.{date}": status}},
+                {
+                    "course_id": self.course_id,
+                    "batch": self.batch
+                },
+                {"$set": {
+                    f"students.{student_id}.{date}": status
+                }},
             )
 
         # add this date to the dates that have been tracked for this course
         self.courses.update_one(
-            {"course_id": self.course_id, "batch": self.batch},
-            {"$push": {"dates": str(date)}},
+            {
+                "course_id": self.course_id,
+                "batch": self.batch
+            },
+            {"$push": {
+                "dates": str(date)
+            }},
         )
