@@ -87,6 +87,7 @@ def index():
 @cross_origin()
 def upload_attendance():
 
+    client_obj.add_email(session['user']['email'])
     try:
         form_data = request.form.to_dict()
     except:
@@ -246,6 +247,8 @@ def upload_attendance():
 @cross_origin()
 def download_attendance():
 
+    client_obj.add_email(session['user']['email'])
+
     course_id, batch = request.form.get('down-course').split('-')
 
     db_obj = Database(client_obj, course_id, batch)
@@ -277,6 +280,7 @@ def download_attendance():
 @app.route('/delete_course', methods=['POST'])
 @cross_origin()
 def delete_course():
+    client_obj.add_email(session['user']['email'])
     try:
         form_data = request.form.to_dict()
     except:
@@ -321,6 +325,7 @@ def delete_course():
 @ cross_origin()
 def add_course():
 
+    client_obj.add_email(session['user']['email'])
     try:
         form_data = request.form.to_dict()
     except:
@@ -459,6 +464,7 @@ def api_signup():
 
 @app.route("/help")
 def help():
+    client_obj.add_email(session['user']['email'])
     return render_template('help.html')
 
 
