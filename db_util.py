@@ -9,8 +9,8 @@ import dropbox
 class Clients:
 
     """
-        Holds MongoDB client URLs and generic functions not related to any course. 
-        This is specific for a session - that is, a teacher.
+    Holds MongoDB client URLs and generic functions not related to any course.
+    This is specific for a session - that is, a teacher.
     """
 
     def __init__(self, students, teachers, courses):
@@ -23,31 +23,30 @@ class Clients:
 
     def generate_token(self) -> str:
         """
-            Generate a unique 8-digit token that has not been assigned to any teacher yet.
-            :returns `token`: 8-digit token in string format
+        Generate a unique 8-digit token that has not been assigned to any teacher yet.
+        :returns `token`: 8-digit token in string format
         """
 
-        token = ''.join(random.choices(string.digits, k=8))
+        token = "".join(random.choices(string.digits, k=8))
 
         unique = False
         while not unique:
-            if not self.teachers.find_one({'token': token}):
+            if not self.teachers.find_one({"token": token}):
                 unique = True
             else:
-                token = ''.join(random.choices(string.digits, k=8))
+                token = "".join(random.choices(string.digits, k=8))
 
         return token
 
     def get_courses(self) -> list:
         """
-            Get the courses taught by a teacher.
-            :return `user_courses`: List of dicts, each describing a course
+        Get the courses taught by a teacher.
+        :return `user_courses`: List of dicts, each describing a course
         """
         user_courses = []
 
         # get course ids of the courses
-        course_ids = self.teachers.find_one(
-            {"email": self.email})["courses"]
+        course_ids = self.teachers.find_one({"email": self.email})["courses"]
 
         for course_object_id in course_ids:
             course = self.courses.find_one({"_id": ObjectId(course_object_id)})
@@ -59,8 +58,8 @@ class Clients:
 class Database:
 
     """
-        Holds context for one single course, for one batch for that particular teacher.
-        # TODO: name can probably be changed to something more apt
+    Holds context for one single course, for one batch for that particular teacher.
+    # TODO: name can probably be changed to something more apt
     """
 
     def __init__(self, clients: Clients, course_id: str, batch: str):
@@ -74,109 +73,107 @@ class Database:
 
     def authorised_for_course(self):
         """
-            Check if the given teacher is authorised to edit the given course.
-            :return `True` if authorised, an error string if not.
+        Check if the given teacher is authorised to edit the given course.
+        :return `True` if authorised, an error string if not.
         """
 
-        if self.get_course_object_id() not in self.teachers.find_one({"email": self.email})['courses']:
-            return 'You cannot delete this course as you are not its owner.'
+        if (
+            self.get_course_object_id()
+            not in self.teachers.find_one({"email": self.email})["courses"]
+        ):
+            return "You cannot delete this course as you are not its owner."
 
         return True
 
     def get_course_object_id(self) -> str:
         """
-            Get the unique object ID assigned by MongoDB to a course.
-            :return `course_object_id`: the unique object ID
+        Get the unique object ID assigned by MongoDB to a course.
+        :return `course_object_id`: the unique object ID
         """
 
-        course_object_id = str(self.courses.find_one({
-            'course_id': self.course_id,
-            'batch': self.batch
-        })['_id'])
+        course_object_id = str(
+            self.courses.find_one({"course_id": self.course_id, "batch": self.batch})[
+                "_id"
+            ]
+        )
 
         return course_object_id
 
     def course_exists(self):
         """
-            Check if a given course exists within the database.
-            :return `True` if exists, an error string if not.
+        Check if a given course exists within the database.
+        :return `True` if exists, an error string if not.
         """
 
-        course = self.courses.find_one({
-            'course_id': self.course_id,
-            'batch': self.batch
-        })
+        course = self.courses.find_one(
+            {"course_id": self.course_id, "batch": self.batch}
+        )
 
         if course is None:
-            return 'Course does not exist!'
+            return "Course does not exist!"
 
         return True
 
     def save_file_dropbox(self, file_path: str, file_name: str):
         """
-            Upload user input files to Dropbox in the user folder.
-            :param file_path: File path from where the file has to be taken
-            :param courses: File name
+        Upload user input files to Dropbox in the user folder.
+        :param file_path: File path from where the file has to be taken
+        :param courses: File name
         """
-        access_token = os.getenv('DROPBOX_ACCESS_TOKEN')
+        access_token = os.getenv("DROPBOX_ACCESS_TOKEN")
 
         # destination folder and file path
-        dest = f'/{self.email}/{file_name}'
+        dest = f"/{self.email}/{file_name}"
         dbx = dropbox.Dropbox(access_token)
 
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             dbx.files_upload(f.read(), dest, autorename=True)
 
     def get_name(self, key: str) -> str:
         """
-            Get name of the student whose roll number is `key`.
-            :return `student`: Name of the student
+        Get name of the student whose roll number is `key`.
+        :return `student`: Name of the student
         """
-        student = self.students.find_one({
-            'roll': key
-        })
-        student.pop('_id')
+        student = self.students.find_one({"roll": key})
+        student.pop("_id")
         return student
 
     def get_course(self) -> dict:
         """
-            Get a course from MongoDB.
-            :return `course`: MongoDB result minus the id
+        Get a course from MongoDB.
+        :return `course`: MongoDB result minus the id
         """
 
         course = self.courses.find_one(
-            {'course_id': self.course_id, 'batch': self.batch}
+            {"course_id": self.course_id, "batch": self.batch}
         )
 
-        course.pop('_id')
+        course.pop("_id")
 
         return course
 
     def delete_course(self):
         """
-            Remove the course ObjectId from the teacher's records and delete the course.
+        Remove the course ObjectId from the teacher's records and delete the course.
         """
 
-        self.teachers.update_one({
-            "email": self.email
-        }, {
-            '$pull': {
-                'courses': self.get_course_object_id()
-            }
-        })
+        self.teachers.update_one(
+            {"email": self.email}, {"$pull": {"courses": self.get_course_object_id()}}
+        )
 
-        result = self.courses.delete_one({
-            'course_id': self.course_id,
-            'batch': self.batch
-        })
+        result = self.courses.delete_one(
+            {"course_id": self.course_id, "batch": self.batch}
+        )
 
-    def update_course_after_parse(self, course_students: list, students: list, flagged: list, date: str):
+    def update_course_after_parse(
+        self, course_students: list, students: list, flagged: list, date: str
+    ):
         """
-            Updates the course with student records & dates
-            :param `course_students`: List of roll numbers of students enrolled in the course
-            :param `students`: List of tuples returned by parsing functions
-            :param `flagged`: List of roll numbers to be flagged
-            :param `date`: Date for which attendance is being tracked
+        Updates the course with student records & dates
+        :param `course_students`: List of roll numbers of students enrolled in the course
+        :param `students`: List of tuples returned by parsing functions
+        :param `flagged`: List of roll numbers to be flagged
+        :param `date`: Date for which attendance is being tracked
         """
 
         for student_id in course_students:
@@ -188,20 +185,13 @@ class Database:
             if (student_id in students.keys()) and (student_id not in flagged):
                 status = students[student_id][1]
 
-            self.courses.update_one({
-                'course_id': self.course_id,
-                'batch': self.batch
-            }, {
-                '$set': {
-                    f'students.{student_id}.{date}': status
-                }
-            })
+            self.courses.update_one(
+                {"course_id": self.course_id, "batch": self.batch},
+                {"$set": {f"students.{student_id}.{date}": status}},
+            )
 
         # add this date to the dates that have been tracked for this course
-        self.courses.update_one({
-            'course_id': self.course_id,
-            'batch': self.batch}, {
-                '$push': {
-                    'dates': str(date)
-                }
-        })
+        self.courses.update_one(
+            {"course_id": self.course_id, "batch": self.batch},
+            {"$push": {"dates": str(date)}},
+        )
