@@ -1,6 +1,6 @@
-{% extends "layout.html" %} 
+{% extends "layout.html" %}
 
-{% block title %} Help - Attendance Tracker {% endblock %} 
+{% block title %} Help - Attendance Tracker {% endblock %}
 
 {% block body %}
 
@@ -50,10 +50,10 @@
                             <ol class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     Before we start tracking attendance, a course has to be added, assigned to a batch
-                                    and students added to it. This is a one-time setup for every course.                                 
+                                    and students added to it. This is a one-time setup for every course.
                                 </li>
                                 <li class="list-group-item">
-                                    To track attendance for a course, an attendance report from MS Teams or responses from 
+                                    To track attendance for a course, an attendance report from MS Teams or responses from
                                     a Google form has to be attached. That's it.
                                 </li>
                                 <li class="list-group-item">
@@ -68,7 +68,7 @@
                                     To no longer track attendance for a course, it can be deleted. This is an irreversible process.
                                 </li>
                                 <li class="list-group-item">
-                                    Meticulous care has been taken to catch and display any errors regarding user action 
+                                    Meticulous care has been taken to catch and display any errors regarding user action
                                     with detailed information. If any such error is not caught, please report it back to us.
                                 </li>
                             </ol>
@@ -76,7 +76,7 @@
 
                         <div class="tab-pane" id="add" role="tabpanel" aria-labelledby="add-tab">
                             <p class="card-text">
-                                A course is uniquely identified by its <span class="highlight">Course ID</span> and <span class="highlight">Batch</span>. This means you can track 
+                                A course is uniquely identified by its <span class="highlight">Course ID</span> and <span class="highlight">Batch</span>. This means you can track
                                 attendance for the same course across multiple batches.
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
@@ -92,7 +92,7 @@
                                         Fill in the <span class="highlight">Batch</span> Year. For example, <b>2017</b>
                                     </li>
                                     <li class="list-group-item">
-                                        Upload the list of students who have to be tracked under this course. 
+                                        Upload the list of students who have to be tracked under this course.
                                         The file (CSV/XLSX) has to be uploaded in the following format:
                                         <table class="table table-sm table-bordered">
                                             <tr>
@@ -117,9 +117,9 @@
                                         </table>
                                         Any and all tracking done for the student is via the Roll Number.
                                     </li>
-                                    <li class="list-group-item"><b>Very Important Note:</b> 
-                                        The <span class="highlight">Full Name</span> field in the MS Teams report 
-                                        and the <span class="highlight">Your Roll Number</span> field in the 
+                                    <li class="list-group-item"><b>Very Important Note:</b>
+                                        The <span class="highlight">Full Name</span> field in the MS Teams report
+                                        and the <span class="highlight">Your Roll Number</span> field in the
                                         Google Form report should match the <span class="highlight">Roll Number</span>
                                         field of this student file, not the <span class="highlight">Name</span> field.
                                         For more info on this, please check the <span class="highlight">Upload A Report</span> tab.
@@ -127,7 +127,7 @@
                                     <li class="list-group-item">Click on the <span class="highlight">Create Course</span> button.</li>
                                     <li class="list-group-item">
                                         Below this button, a status update will be displayed.
-                                        If it's successful, then the course has been added. Otherwise, a 
+                                        If it's successful, then the course has been added. Otherwise, a
                                         message stating the mistake will be shown and you can re-do the process.
                                     </li>
                                 </ul>
@@ -136,7 +136,7 @@
 
                         <div class="tab-pane" id="upload" role="tabpanel" aria-labelledby="upload-tab">
                             <p class="card-text">
-                                Attendance can be uploaded here and their parsing logic can be 
+                                Attendance can be uploaded here and their parsing logic can be
                                 controlled by a number of features.
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
@@ -151,15 +151,15 @@
                                         Select the kind of upload to be done:
                                         <ul>
                                             <li>
-                                                <span class="highlight">Batch</span> - this mode allows you to 
-                                                upload multiple reports at a time. You can upload both MS Teams and Google Form reports 
+                                                <span class="highlight">Batch</span> - this mode allows you to
+                                                upload multiple reports at a time. You can upload both MS Teams and Google Form reports
                                                 at the same time. No threshold or flag features are applicable here.
                                                 The format for both reports have been described below.
                                             </li>
                                             <li>
-                                                <span class="highlight">Single</span> - this mode allows you to upload 
-                                                only a single file at a time. You can choose between 2 formats, both described below. 
-                                                You can get a lot more control over the tracking in this mode as you can use both threshold 
+                                                <span class="highlight">Single</span> - this mode allows you to upload
+                                                only a single file at a time. You can choose between 2 formats, both described below.
+                                                You can get a lot more control over the tracking in this mode as you can use both threshold
                                                 and flag features depending on the format you choose.
                                             </li>
                                         </ul>
@@ -168,14 +168,14 @@
                                         Select the kind of report to be uploaded (if opting for Single Upload):
                                         <ul>
                                             <li>
-                                                <span class="highlight">MSTeams</span> - this is the downloadable report available on the 
+                                                <span class="highlight">MSTeams</span> - this is the downloadable report available on the
                                                 platform. The parsing logic allows for multiple entries for the same student
                                                 to accomodate disconnections due to technical issues.
                                             </li>
                                             <li>
-                                                <span class="highlight">Google Form</span> - responses from a Google form extracted into a 
+                                                <span class="highlight">Google Form</span> - responses from a Google form extracted into a
                                                 CSV or XLSX file are also accepted.
-                                                
+
                                                 <ul>
                                                     <li>This mode however, disables the <span class="highlight">Threshold</span> feature.</li>
                                                     <li>Columns can be interchanged. Any extra columns are ignored.</li>
@@ -237,18 +237,18 @@
                                         </ul>
                                     </li>
                                     <li class="list-group-item">
-                                        Fill in the <span class="highlight">Meeting End Time</span> (applicable only for single upload MS Teams reports). 
+                                        Fill in the <span class="highlight">Meeting End Time</span> (applicable only for single upload MS Teams reports).
                                         <ul>
                                             <li>This will be used to track the duration of the class.</li>
                                             <li>The Meeting Start Time is assumed to be the smallest timestamp in the file.</li>
                                             <li>Format: 11/2/2020, 9:35:35 AM</li>
-                                        </ul>                                         
+                                        </ul>
                                     </li>
                                     <li class="list-group-item">
                                         Fill in the <span class="highlight">Threshold</span> in minutes (applicable only for single upload MS Teams reports):
                                         <ul>
                                             <li>
-                                                This is used to mark students present only if they have 
+                                                This is used to mark students present only if they have
                                                 been logged into the class for atleast this amount of time.
                                             </li>
                                             <li>
@@ -265,7 +265,7 @@
                                                 be tracked even if they meet the threshold criteria.
                                             </li>
                                             <li>
-                                                Helps to forcibly mark those students as absent who the teacher feels was just logged into the class 
+                                                Helps to forcibly mark those students as absent who the teacher feels was just logged into the class
                                                 but not listening/active/responsive.
                                             </li>
                                         </ul>
@@ -283,8 +283,8 @@
 
                         <div class="tab-pane" id="download" role="tabpanel" aria-labelledby="download-tab">
                             <p class="card-text">
-                                The attendance reports uploaded for a course are parsed and collated into one 
-                                single file for the user to consume. There are multiple options you can choose 
+                                The attendance reports uploaded for a course are parsed and collated into one
+                                single file for the user to consume. There are multiple options you can choose
                                 from when it comes to downloading these reports.
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item"> Navigate to the <span class="highlight">Download Attendance</span> section on the homepage. </li>
@@ -294,14 +294,14 @@
                                         you to clearly identify the course.
                                     </li>
                                     <li class="list-group-item">
-                                        Select the kind of report needed: <span class="highlight">Complete</span> shows the complete 
+                                        Select the kind of report needed: <span class="highlight">Complete</span> shows the complete
                                         data for all the days and <span class="highlight">Defaulter</span> shows only the date-wise data
                                         for students having less than 50% total attendance till the latest date of tracking.
                                     </li>
                                     <li class="list-group-item"> Select the format of the report needed: CSV or XLSX.</li>
                                     <li class="list-group-item"> Click on the <span class="highlight">Download</span> button. </li>
                                     <li class="list-group-item">
-                                        You will be prompted to save the file renamed as 
+                                        You will be prompted to save the file renamed as
                                         <code><b>CourseID</b>_<b>Batch</b>_asOf_<b>LastTrackingDate</b>.<b>Format</b></code>
                                         It will also include the <b>Defaulter</b> postfix if that is selected.
                                     </li>
@@ -348,11 +348,11 @@
                                                 <b>TRUE</b> indicates that the person was present on that day.
                                             </li>
                                             <li>
-                                                The Defaulter list looks the same except it only contains 
+                                                The Defaulter list looks the same except it only contains
                                                 details of the students having less than 50% total attendance till the latest date of tracking.
                                             </li>
-                                        </ul>                                        
-                                        
+                                        </ul>
+
                                     </li>
                                 </ul>
                             </p>
@@ -360,8 +360,8 @@
 
                         <div class="tab-pane" id="delete" role="tabpanel" aria-labelledby="delete-tab">
                             <p class="card-text">
-                                If you do not wish to track attendance for a course any more, it can be 
-                                deleted. It is an irreversible process and will delete all data and files 
+                                If you do not wish to track attendance for a course any more, it can be
+                                deleted. It is an irreversible process and will delete all data and files
                                 associated with the course. As a fallback, you can download the latest
                                 report before proceeding with the steps below.
                                 <ul class="list-group list-group-flush">
@@ -369,7 +369,7 @@
                                         Navigate to the <span class="highlight">Delete Course</span> section on the homepage.
                                     </li>
                                     <li class="list-group-item">
-                                        Select the course you wish to delete from the dropdown. All 
+                                        Select the course you wish to delete from the dropdown. All
                                         identifying details like <span class="highlight">Course ID</span> & <span class="highlight">Batch</span> will be visible for
                                         you to clearly identify the course.
                                     </li>
