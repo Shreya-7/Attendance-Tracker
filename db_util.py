@@ -1,9 +1,10 @@
+import os
+import random
+import string
+
+import dropbox
 from bson.objectid import ObjectId
 from pymongo import MongoClient
-import random
-import os
-import string
-import dropbox
 
 
 class Clients:

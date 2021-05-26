@@ -1,36 +1,20 @@
-from flask import (
-    Flask,
-    render_template,
-    request,
-    redirect,
-    session,
-    url_for,
-    jsonify,
-    make_response,
-    send_from_directory,
-)
-from flask_cors import CORS, cross_origin
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-import os
 import json
+import os
 import random
 import string
-
-from dateutil import parser
 from uuid import uuid4
 
-from file_util import (
-    UploadedFile,
-    StudentFile,
-    GoogleFormFile,
-    TeamsFile,
-    Report,
-    remove_whitespaces,
-    attribute_check,
-)
+from bson.objectid import ObjectId
+from dateutil import parser
+from flask import (Flask, jsonify, make_response, redirect, render_template,
+                   request, send_from_directory, session, url_for)
+from flask_cors import CORS, cross_origin
+from pymongo import MongoClient
+
 from db_util import Clients, Database
 from decorators import login_required, misc_error
+from file_util import (GoogleFormFile, Report, StudentFile, TeamsFile,
+                       UploadedFile, attribute_check, remove_whitespaces)
 
 app = Flask(__name__, template_folder="templates", static_url_path="/static")
 app.secret_key = "lol"
