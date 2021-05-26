@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     document.querySelectorAll('.custom-file-input').forEach(fileInput => {
         fileInput.onchange =  ()=>{
-            
             document.querySelector(`label[for="${fileInput.id}"]`).innerHTML = fileInput.files[0].name;
         };
     });
@@ -62,6 +61,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
         formData.append('course_id', identifiers[0]);
         formData.append('batch', identifiers[1]);
         formData.append('api', '0');
+
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]); 
+        }
 
         fetch("/upload_attendance", {
             method: 'POST',
@@ -137,6 +140,31 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.querySelector('#teams').addEventListener('click', ()=>{
         document.querySelector('#end-time').disabled = false;
         document.querySelector('#threshold').disabled = false;
+    });
+    document.querySelector('#batch').addEventListener('click', ()=>{
+        document.querySelector('#end-time').disabled = true;
+        document.querySelector('#threshold').disabled = true;
+        document.querySelector('#flag-list').disabled = true;
+        document.querySelector('#end-time').value = '';
+        document.querySelector('#threshold').value = '';
+        document.querySelector('#flag-list').value = '';
+
+        document.querySelector('#up-file').multiple = true;
+        document.querySelector('#gform').disabled = true;
+        document.querySelector('#teams').disabled = true;
+        // document.querySelector('#attendance-date').disabled = true;
+    });
+    document.querySelector('#single').addEventListener('click', ()=>{
+        document.querySelector('#end-time').disabled = false;
+        document.querySelector('#threshold').disabled = false;
+        document.querySelector('#flag-list').disabled = false;
+
+        document.querySelector('#up-file').multiple = false;
+        document.querySelector('#gform').disabled = false;
+        document.querySelector('#teams').disabled = false;
+        // document.querySelector('#attendance-date').disabled = false;
+
+        document.querySelector('#up-file').value = "";
     });
 });
 

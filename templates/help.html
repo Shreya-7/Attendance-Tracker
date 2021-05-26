@@ -57,6 +57,9 @@
                                     a Google form has to be attached. That's it.
                                 </li>
                                 <li class="list-group-item">
+                                    You can also upload multiple reports at a time and mix-match the two formats available.
+                                </li>
+                                <li class="list-group-item">
                                     To view the tracked attendance for a course, reports can be downloaded in multiple
                                     formats. These reports can either be regular or defaulter, and are automatically
                                     updated till the latest date for which attendance has been tracked.
@@ -145,16 +148,47 @@
                                         you to clearly identify the course.
                                     </li>
                                     <li class="list-group-item">
-                                        Select the <span class="highlight">Date</span> for which attendance has to be tracked (not the date
-                                        on which the upload is being done). This date should match the date in the 
-                                        upload file.
+                                        Select the kind of upload to be done:
+                                        <ul>
+                                            <li>
+                                                <span class="highlight">Batch</span> - this mode allows you to 
+                                                upload multiple reports at a time. You can upload both MS Teams and Google Form reports 
+                                                at the same time. No threshold or flag features are applicable here.
+                                                The format for both reports have been described below.
+                                            </li>
+                                            <li>
+                                                <span class="highlight">Single</span> - this mode allows you to upload 
+                                                only a single file at a time. You can choose between 2 formats, both described below. 
+                                                You can get a lot more control over the tracking in this mode as you can use both threshold 
+                                                and flag features depending on the format you choose.
+                                            </li>
+                                        </ul>
                                     </li>
                                     <li class="list-group-item">
-                                        Select the kind of report to be uploaded:
+                                        Select the kind of report to be uploaded (if opting for Single Upload):
                                         <ul>
                                             <li>
                                                 <span class="highlight">MSTeams</span> - this is the downloadable report available on the 
-                                                platform. The format (CSV/XLSX) should be as follows:
+                                                platform. The parsing logic allows for multiple entries for the same student
+                                                to accomodate disconnections due to technical issues.
+                                            </li>
+                                            <li>
+                                                <span class="highlight">Google Form</span> - responses from a Google form extracted into a 
+                                                CSV or XLSX file are also accepted.
+                                                
+                                                <ul>
+                                                    <li>This mode however, disables the <span class="highlight">Threshold</span> feature.</li>
+                                                    <li>Columns can be interchanged. Any extra columns are ignored.</li>
+                                                    <li>Multiple entries for the same student are ignored.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="list-group-item">
+                                        Upload the file(s) conforming to the format:
+                                        <ul>
+                                            <li>
+                                                <span class="highlight">MSTeams</span> - The format (CSV/XLSX) should be as follows:
                                                 <table class="table table-sm table-bordered">
                                                     <tr>
                                                         <th>Full Name</th>
@@ -182,12 +216,9 @@
                                                         <td>11/2/2021, 9:50:35 AM</td>
                                                     </tr>
                                                 </table>
-                                                The parsing logic allows for multiple entries for the same student
-                                                to accomodate disconnections due to technical issues.
                                             </li>
                                             <li>
-                                                <span class="highlight">Google Form</span> - responses from a Google form extracted into a 
-                                                CSV or XLSX file are also accepted. The format should be as follows:
+                                                <span class="highlight">Google Form</span> - The format (CSV/XLSX) should be as follows:
                                                 <table class="table table-sm table-bordered">
                                                     <tr>
                                                         <th>Timestamp</th>
@@ -202,17 +233,11 @@
                                                         <td>11</td>
                                                     </tr>
                                                 </table>
-                                                <ul>
-                                                    <li>This mode however, disables the <span class="highlight">Threshold</span> feature.</li>
-                                                    <li>Columns can be interchanged. Any extra columns are ignored.</li>
-                                                    <li>Multiple entries for the same student are ignored.</li>
-                                                </ul>
                                             </li>
                                         </ul>
                                     </li>
-                                    <li class="list-group-item">Upload the file conforming to the format mentioned above.</li>
                                     <li class="list-group-item">
-                                        Fill in the <span class="highlight">Meeting End Time</span> (applicable only for MS Teams reports). 
+                                        Fill in the <span class="highlight">Meeting End Time</span> (applicable only for single upload MS Teams reports). 
                                         <ul>
                                             <li>This will be used to track the duration of the class.</li>
                                             <li>The Meeting Start Time is assumed to be the smallest timestamp in the file.</li>
@@ -220,7 +245,7 @@
                                         </ul>                                         
                                     </li>
                                     <li class="list-group-item">
-                                        Fill in the <span class="highlight">Threshold</span> in minutes (applicable only for MS Teams reports):
+                                        Fill in the <span class="highlight">Threshold</span> in minutes (applicable only for single upload MS Teams reports):
                                         <ul>
                                             <li>
                                                 This is used to mark students present only if they have 
@@ -233,7 +258,7 @@
                                         </ul>
                                     </li>
                                     <li class="list-group-item">
-                                        Fill in the <span class="highlight">Flagged Roll Numbers</span>:
+                                        Fill in the <span class="highlight">Flagged Roll Numbers</span> (applicable only for single uploads):
                                         <ul>
                                             <li>
                                                 This is a comma-separated list of roll numbers for whom attendance will not
