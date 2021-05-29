@@ -12,29 +12,29 @@
                     <ul class="nav nav-tabs card-header-tabs" id="help-list" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" href="#get-started" role="tab" aria-controls="get-started"
-                                aria-selected="true">
+                                aria-selected="Present">
                                 <h5>Get Started</h5>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#add" role="tab" aria-controls="add"
-                                aria-selected="false">
+                                aria-selected="Absent">
                                 <h5>Add A Course</h5>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#upload" role="tab" aria-controls="upload"
-                                aria-selected="false">
+                                aria-selected="Absent">
                                 <h5>Upload A Report</h5>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#download" role="tab" aria-controls="download" aria-selected="false">
+                            <a class="nav-link" href="#download" role="tab" aria-controls="download" aria-selected="Absent">
                                 <h5>Download A Report</h5>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#delete" role="tab" aria-controls="delete" aria-selected="false">
+                            <a class="nav-link" href="#delete" role="tab" aria-controls="delete" aria-selected="Absent">
                                 <h5>Delete A Course</h5>
                             </a>
                         </li>
@@ -245,7 +245,7 @@
                                         </ul>                                         
                                     </li>
                                     <li class="list-group-item">
-                                        Fill in the <span class="highlight">Threshold</span> in minutes (applicable only for single upload MS Teams reports):
+                                        Fill in the <span class="highlight">Threshold</span> in minutes (optional, applicable only for single upload MS Teams reports):
                                         <ul>
                                             <li>
                                                 This is used to mark students present only if they have 
@@ -258,7 +258,7 @@
                                         </ul>
                                     </li>
                                     <li class="list-group-item">
-                                        Fill in the <span class="highlight">Flagged Roll Numbers</span> (applicable only for single uploads):
+                                        Fill in the <span class="highlight">Flagged Roll Numbers</span> (optional, applicable only for single uploads):
                                         <ul>
                                             <li>
                                                 This is a comma-separated list of roll numbers for whom attendance will not
@@ -316,27 +316,27 @@
                                             </tr>
                                             <tr>
                                                 <td>10</td>
-                                                <td>TRUE</td>
-                                                <td>TRUE</td>
-                                                <td>TRUE</td>
+                                                <td>Present</td>
+                                                <td>Present</td>
+                                                <td>Present</td>
                                             </tr>
                                             <tr>
                                                 <td>11</td>
-                                                <td>TRUE</td>
-                                                <td>FALSE</td>
-                                                <td>TRUE</td>
+                                                <td>Present</td>
+                                                <td>Absent</td>
+                                                <td>Present</td>
                                             </tr>
                                             <tr>
                                                 <td>12</td>
-                                                <td>TRUE</td>
-                                                <td>FALSE</td>
-                                                <td>FALSE</td>
+                                                <td>Present</td>
+                                                <td>Absent</td>
+                                                <td>Absent</td>
                                             </tr>
                                             <tr>
                                                 <td>13</td>
-                                                <td>TRUE</td>
-                                                <td>TRUE</td>
-                                                <td>FALSE</td>
+                                                <td>Present</td>
+                                                <td>Present</td>
+                                                <td>Absent</td>
                                             </tr>
                                         </table>
                                         <ul>
@@ -345,7 +345,7 @@
                                                 the order in which they were uploaded.
                                             </li>
                                             <li>
-                                                <b>TRUE</b> indicates that the person was present on that day.
+                                                <b>Present</b> indicates that the person was present on that day.
                                             </li>
                                             <li>
                                                 The Defaulter list looks the same except it only contains 

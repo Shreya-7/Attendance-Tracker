@@ -170,38 +170,49 @@ class Database:
             'batch': self.batch
         })
 
-    def update_course_after_parse(self, course_students: list, students: list, flagged: list, date: str):
+    def update_course_after_parse(self, course_students: list, students: list, flagged: list, dates: list, count: int):
         """
             Updates the course with student records & dates
             :param `course_students`: List of roll numbers of students enrolled in the course
-            :param `students`: List of tuples returned by parsing functions
-            :param `flagged`: List of roll numbers to be flagged
-            :param `date`: Date for which attendance is being tracked
+            :param `students`: List of list of tuples returned by parsing functions
+            :param `flagged`: List of list of roll numbers to be flagged
+            :param `date`: List of dates for which attendance is being tracked
+            :param `count`: Number of dates for which update is being made
         """
+
+        set_query = {}
 
         for student_id in course_students:
 
-            status = False
+            for index in range(count):
 
-            # if the student has a record in the uploaded file and has not been flagged
+                status = False
 
-            if (student_id in students.keys()) and (student_id not in flagged):
-                status = students[student_id][1]
+                # if the student has a record in the uploaded file and has not been flagged
 
-            self.courses.update_one({
-                'course_id': self.course_id,
-                'batch': self.batch
-            }, {
-                '$set': {
-                    f'students.{student_id}.{date}': status
-                }
-            })
+                if (student_id in students[index].keys()) and (student_id not in flagged[index]):
+                    status = students[index][student_id][1]
+
+                query_key = f'students.{student_id}.{dates[index]}'
+                set_query[query_key] = status
+
+        self.courses.update_one({
+            'course_id': self.course_id,
+            'batch': self.batch
+        }, {
+            # '$set': {
+            #     f'students.{student_id}.{date}': status
+            # }
+            '$set': set_query
+        })
 
         # add this date to the dates that have been tracked for this course
         self.courses.update_one({
             'course_id': self.course_id,
             'batch': self.batch}, {
                 '$push': {
-                    'dates': str(date)
+                    'dates': {
+                        '$each': dates
+                    }
                 }
         })

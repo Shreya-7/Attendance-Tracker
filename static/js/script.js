@@ -62,10 +62,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
         formData.append('batch', identifiers[1]);
         formData.append('api', '0');
 
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]); 
-        }
-
         fetch("/upload_attendance", {
             method: 'POST',
             body: formData
@@ -74,7 +70,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
             if(response.status == 200) {
                 response.json().then((response)=>{                   
-                    resultAlert("upload_attendance_alert", "Attendance updated!", "alert-success");
+                    resultAlert("upload_attendance_alert", response['message'], "alert-success");
                 })
             }
 
@@ -164,6 +160,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         document.querySelector('#teams').disabled = false;
         // document.querySelector('#attendance-date').disabled = false;
 
+        document.querySelector('#teams').checked = true;
         document.querySelector('#up-file').value = "";
     });
 });

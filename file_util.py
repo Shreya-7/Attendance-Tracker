@@ -175,7 +175,7 @@ class GoogleFormFile(UploadedFile):
 
                 else:
                     timestamp = parser.parse(
-                        row[timestamp_index], dayfirst=True)
+                        row[timestamp_index])
 
                     extracted_date = timestamp.date()  # extract date
                     dates.append(extracted_date)
@@ -200,7 +200,6 @@ class GoogleFormFile(UploadedFile):
             :return `students`: Dictionary with student roll number (as given in the file) as key
             and tuple (date, Boolean) as value
         """
-        print(file_path)
         students = {}
         with open(file_path, mode='r') as csv_file:
 
@@ -225,14 +224,12 @@ class GoogleFormFile(UploadedFile):
 
                     student_id = str(int(row[roll_index].split('.')[0]))
                     timestamp = parser.parse(
-                        row[timestamp_index], dayfirst=True)
+                        row[timestamp_index])
 
                     extracted_date = timestamp.date()  # extract date
 
                     # mark student in the file as present
                     students[student_id] = (self.date, True)
-
-                    print(student_id, timestamp, students)
 
                 line_count += 1
 
@@ -419,7 +416,6 @@ class Report():
         self.excel_file_path = f'{self.folder_path}/{self.filename}.xlsx'
         excel_file = pd.ExcelWriter(self.excel_file_path)
         csv_data.to_excel(excel_file, index=False)
-        print(self.csv_file_path, self.excel_file_path)
         excel_file.save()
 
     def create_filename(self, fields):

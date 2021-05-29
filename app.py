@@ -60,6 +60,7 @@ def get_all_courses():
 
 
 @app.route("/")
+@misc_error
 def index():
 
     # empty the upload folder directory
@@ -85,6 +86,7 @@ def index():
 
 @app.route("/upload_attendance", methods=['POST'])
 @cross_origin()
+@misc_error
 def upload_attendance():
 
     client_obj.add_email(session['user']['email'])
@@ -99,11 +101,19 @@ def upload_attendance():
 
     db_obj = Database(client_obj, form_data['course_id'], form_data['batch'])
 
+    # get course details from the DB
+    course = db_obj.get_course()
+    course_students = course['students'].keys()
+
     file_obj = ''
     dates = []
+    result_students = []
+    result_flagged = []
+
     files = request.files.getlist('file')
     for file in files:
 
+        # save the file
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
 
@@ -116,12 +126,14 @@ def upload_attendance():
 
         students = {}
 
+        # check the extension of the file
         check_extension_result = generic_file_obj.check_extension()
         if check_extension_result != True:
             return make_response(jsonify({
                 'error': check_extension_result
             }), 400)
 
+        # convert the file to CSV if it is XLSX
         if extension != 'csv':
 
             file_path = os.path.join(
@@ -129,8 +141,10 @@ def upload_attendance():
             generic_file_obj.convert_to_csv(result_path=file_path)
             generic_file_obj.file_path = file_path
 
+        # determine the type of the uploaded file (Google or MSTeams)
         file_type = generic_file_obj.get_file_type()
 
+        # if single upload, create respective objects
         if form_data['upload_type'] == '0':
             if form_data['input_mode'] == '0':
 
@@ -149,6 +163,7 @@ def upload_attendance():
                     }), 400)
                 file_obj = TeamsFile(file_path, file.filename, db_obj)
 
+        # if batch upload, create respective objects and set flags
         else:
 
             if file_type == 0:
@@ -164,30 +179,46 @@ def upload_attendance():
 
             form_data['flags'] = ''
 
+        # extract date from the file
         date, status = file_obj.get_date()
         if status is False:
             return make_response(jsonify({
                 'error': date
             }), 400)
 
+        # process flagged input
         flagged = [x.strip() for x in form_data['flags'].split(',')]
         if '' in flagged:
             flagged.remove('')
 
+        # if google form type, process file
         if file_type == 0:
             students = file_obj.parse_google_form_result(file_path)
 
+        # if msteams type, process file
         elif file_type == 1:
 
+            # set default end_time and threshold if batch upload
             if form_data['upload_type'] == '1':
                 end_time = f'{date}, 11:59 PM'
                 threshold = 0
 
+            # set and validate end_time and threshold if single upload
             else:
 
                 end_time = form_data['end-time']
-                threshold = int(form_data['threshold'])
+                threshold = 0
 
+                # check for negative threshold
+                if form_data['threshold'] != '':
+                    threshold = int(form_data['threshold'])
+
+                    if threshold < 0:
+                        return make_response(jsonify({
+                            'error': 'Negative threshold value not allowed.'
+                        }), 400)
+
+                # check for date mismatch between file and end_time
                 if date != str(parser.parse(end_time, dayfirst=True).date()):
 
                     return make_response(jsonify({
@@ -197,6 +228,7 @@ def upload_attendance():
             students = file_obj.parse_downloaded_report(
                 end_time, threshold, file_path)
 
+        # check error after parsing
         if isinstance(students, str):
             return make_response(jsonify({
                 'error': students
@@ -205,19 +237,15 @@ def upload_attendance():
         # remove the uploaded file
         os.remove(file_path)
 
-        course = db_obj.get_course()
-
         if date in course['dates']:
             return make_response(jsonify({
                 'error': 'Attendance for this date has already been recorded.'
             }), 400)
 
-        course_students = course['students'].keys()
-
         for roll in students.keys():
             if roll not in course_students:
                 return make_response(jsonify({
-                    'error': f'Roll {roll} mentioned in the report has not been added to this course.'
+                    'error': f'Roll {roll} mentioned in file {file.filename} has not been added to this course. Please reupload.'
                 }), 400)
 
         # check if flagged students are enrolled in the course
@@ -225,26 +253,34 @@ def upload_attendance():
             for roll in flagged:
                 if roll not in course_students:
                     return make_response(jsonify({
-                        'error': f'Roll {roll} mentioned in the flags has not been added to this course.'
+                        'error': f'Roll {roll} mentioned in the flags has not been added to this course. Please reupload.'
                     }), 400)
 
-        # update every student and the course
-
-        db_obj.update_course_after_parse(
-            course_students, students, flagged, date)
-
         dates.append(date)
+        result_students.append(students)
+        result_flagged.append(flagged)
+
+    if len(set(dates)) != len(dates):
+        return make_response(jsonify({
+            'error': f'Multiple files have been uploaded with the same date :('
+        }), 400)
+
+    # update every student and the course
+
+    db_obj.update_course_after_parse(
+        course_students, result_students, result_flagged, dates, len(files))
 
     success_message = 'Attendance updated for the following: '
     for date in dates:
         success_message += date + ", "
     return make_response(jsonify({
-        'message': success_message
+        'message': success_message + " :)"
     }), 200)
 
 
 @ app.route("/download_attendance", methods=['POST'])
 @cross_origin()
+@misc_error
 def download_attendance():
 
     client_obj.add_email(session['user']['email'])
@@ -279,6 +315,7 @@ def download_attendance():
 
 @app.route('/delete_course', methods=['POST'])
 @cross_origin()
+@misc_error
 def delete_course():
     client_obj.add_email(session['user']['email'])
     try:
@@ -323,6 +360,7 @@ def delete_course():
 
 @ app.route("/add_course", methods=['POST'])
 @ cross_origin()
+@misc_error
 def add_course():
 
     client_obj.add_email(session['user']['email'])
@@ -423,6 +461,7 @@ def add_course():
 
 
 @app.route("/api_signup", methods=['POST'])
+@misc_error
 def api_signup():
 
     try:
@@ -463,8 +502,8 @@ def api_signup():
 
 
 @app.route("/help")
+@misc_error
 def help():
-    client_obj.add_email(session['user']['email'])
     return render_template('help.html')
 
 
