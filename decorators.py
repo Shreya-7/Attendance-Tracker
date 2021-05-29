@@ -1,12 +1,13 @@
 from flask import make_response, jsonify, session
+import traceback
 
 
 def misc_error(my_function):
     def wrap(*args, **kwargs):
         try:
             return my_function(*args, **kwargs)
-        except Exception as e:
-            print(str(e))
+        except:
+            print(traceback.print_exc())
             return make_response(jsonify({
                 'error': 'An unexpected error has occurred. Please try again later.'
             }), 400)
