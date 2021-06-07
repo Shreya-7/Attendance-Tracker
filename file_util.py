@@ -18,8 +18,7 @@ class UploadedFile:
         self.db_obj = db_obj
 
         self.student_headings = ['Roll Number', 'Name']
-        self.gform_headings = ['Timestamp', 'Username',
-                               'Your Name', 'Your Roll Number']
+        self.gform_headings = ['Timestamp', 'Your Roll Number']
         self.teams_headings = ['Full Name', 'User Action', 'Timestamp']
 
     def heading_check(self, required_headings: list, file_headings: list, strictness=1):
@@ -100,7 +99,8 @@ class UploadedFile:
 
             for row in csv_reader:
 
-                if row == self.gform_headings:
+                print(self.gform_headings, row)
+                if row == self.gform_headings or self.gform_headings in row:
                     return 0
                 elif row == self.teams_headings:
                     return 1
@@ -121,7 +121,7 @@ class StudentFile(UploadedFile):
             :return: List of tuples of (student roll, student name)
         """
         students = []
-        with open(self.file_path, mode='r') as csv_file:
+        with open(self.file_path, mode='r', encoding='utf-8') as csv_file:
 
             csv_reader = csv.reader(csv_file, delimiter=',')
             line_count = 0
