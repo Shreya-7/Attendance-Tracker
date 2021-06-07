@@ -400,13 +400,29 @@ def add_course():
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
 
-    file_obj = StudentFile(file_path, file.filename, db_obj)
+    # upload the file to dropbox
+    db_obj.save_file_dropbox(file_path, file.filename)
 
-    filename_check = file_obj.check_extension()
-    if filename_check != True:
+    filename, extension = file.filename.split('.')
+
+    generic_file_obj = UploadedFile(file_path, file.filename, db_obj)
+
+    # check the extension of the file
+    check_extension_result = generic_file_obj.check_extension()
+    if check_extension_result != True:
         return make_response(jsonify({
-            'error': filename_check
+            'error': check_extension_result
         }), 400)
+
+    # convert the file to CSV if it is XLSX
+    if extension != 'csv':
+
+        file_path = os.path.join(
+            app.config['UPLOAD_FOLDER'], filename + ".csv")
+        generic_file_obj.convert_to_csv(result_path=file_path)
+        generic_file_obj.file_path = file_path
+
+    file_obj = StudentFile(file_path, file.filename, db_obj)
 
     # get extracted student details from the course file
     course_students = file_obj.get_students_from_file()

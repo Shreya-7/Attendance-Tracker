@@ -99,7 +99,6 @@ class UploadedFile:
 
             for row in csv_reader:
 
-                print(self.gform_headings, row)
                 if row == self.gform_headings or self.gform_headings in row:
                     return 0
                 elif row == self.teams_headings:

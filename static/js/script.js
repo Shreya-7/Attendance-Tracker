@@ -19,6 +19,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
         var formData = new FormData(my_form);
         formData.append('api', '0');
 
+        if (formData.get('course_id').indexOf('-') != -1) {
+            resultAlert('add_course_alert', 'Course ID cannot have the `-` character. Please choose something else.', 'alert-warning');
+            return false;
+        }
+
+        if (formData.get('batch').indexOf('-') != -1) {
+            resultAlert('add_course_alert', 'Batch cannot have the `-` character. Please choose something else.', 'alert-warning');
+            return false;
+        }
+
         fetch('/add_course', {
             method: 'POST',
             body: formData

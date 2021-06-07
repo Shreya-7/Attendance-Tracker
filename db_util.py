@@ -143,7 +143,6 @@ class Database:
             Get a course from MongoDB.
             :return `course`: MongoDB result minus the id
         """
-
         course = self.courses.find_one(
             {'course_id': self.course_id, 'batch': self.batch}
         )
