@@ -12,7 +12,7 @@
                 <div class="form-group">
                     <select class="form-control" id="up-course" name="course" required="">
                         {% for course in courses %}
-                            <option value='{{ course.course_id }}-{{ course.batch }}'>
+                            <option value='{{ course.course_id }}_{{ course.batch }}'>
                                 {{ course.course_id }} - {{ course.course_name }} (Batch {{ course.batch }})
                             </option>
                         {% endfor %}
@@ -74,7 +74,7 @@
                 <div class="form-group">
                     <select class="form-control" id="down-course" name='down-course'required="">
                         {% for course in courses %}
-                            <option value='{{ course.course_id }}-{{ course.batch }}'>
+                            <option value='{{ course.course_id }}_{{ course.batch }}'>
                                 {{ course.course_id }} - {{ course.course_name }} (Batch {{ course.batch }})
                             </option>
                         {% endfor %}
@@ -108,7 +108,7 @@
                 <div class="form-group">
                     <select class="form-control" id="del-course" name="course" required="">
                         {% for course in courses %}
-                        <option value='{{ course.course_id }}-{{ course.batch }}'>
+                        <option value='{{ course.course_id }}_{{ course.batch }}'>
                             {{ course.course_id }} - {{ course.course_name }} (Batch {{ course.batch }})
                         </option>
                         {% endfor %}

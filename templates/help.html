@@ -38,6 +38,11 @@
                                 <h5>Delete A Course</h5>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#troubleshoot" role="tab" aria-controls="troubleshoot" aria-selected="Absent">
+                                <h5>Pointers & Scope</h5>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
@@ -84,14 +89,14 @@
                                     </li>
                                     <li class="list-group-item">
                                         Fill in the <span class="highlight">Course ID</span>. For example, <b>CS402.  </b>
-                                        Note:  This field cannot contain the `-` (dash) character.
+                                        Note:  This field cannot contain the `_` (underscore) character.
                                     </li>
                                     <li class="list-group-item">
                                         Fill in the <span class="highlight">Course Name</span>. For example, <b>Data Structures and Algorithms.  </b>
-                                        Note: This field cannot contain the `-` (dash) character.
                                     </li>
                                     <li class="list-group-item">
                                         Fill in the <span class="highlight">Batch</span> Year. For example, <b>2017</b>
+                                        Note: This field cannot contain the `_` (underscore) character.
                                     </li>
                                     <li class="list-group-item">
                                         Upload the list of students who have to be tracked under this course. 
@@ -218,6 +223,10 @@
                                                         <td>25/2/2021, 9:50:35 AM</td>
                                                     </tr>
                                                 </table>
+                                                <ul>
+                                                    <li>Please delete the row containing the teacher log from the file before uploading.</li>
+                                                    <li>Please upload either a tab-separated or a comma-separated file only.</li>
+                                                </ul>
                                             </li>
                                             <li>
                                                 <span class="highlight">Google Form</span> - The format (CSV/XLSX) should be as follows:
@@ -235,6 +244,10 @@
                                                         <td>11</td>
                                                     </tr>
                                                 </table>
+                                                <ul>
+                                                    <li>If your file has some extra columns, it will still work. Those columns will simply be ignored.</li>
+                                                    <li>Please upload a comma-separated file only.</li>
+                                                </ul>
                                             </li>
                                         </ul>
                                     </li>
@@ -276,7 +289,7 @@
                                         Click on the <span class="highlight">Upload</span> button.
                                     </li>
                                     <li class="list-group-item">
-                                        Below this button, a status update will be displayed. If it's successful, then the course has been added. Otherwise, a
+                                        Below this button, a status update will be displayed. If it's successful, then the attendance has been uploaded. Otherwise, a
                                         message stating the mistake will be shown and you can re-do the process.
                                     </li>
                                 </ul>
@@ -383,6 +396,51 @@
                                     </li>
                                 </ul>
                             </p>
+                        </div>
+                        <div class="tab-pane" id="troubleshoot" role="tabpanel" aria-labelledby="troubleshoot-tab">
+                            <b>
+                                The app has very descriptive error messages but here are some pointers on how to troubleshoot the 'Unexpected error'
+                                message:
+                            </b>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Check whether the file formats conform to the specified ones.</li>
+                                <li class="list-group-item">Check whether the date formats are okay. They are different for MS Teams and Google Form.</li>
+                                <li class="list-group-item">Check whether the course ID has an underscore character. (The app doesn't allow such courses
+                                    to be created but if the course was made before that update, it might still exist and cause errors)
+                                    If it does, please delete the course because it cannot be used.
+                                </li>
+                            </ul>
+                            <b>
+                                Here are some extra details regarding what is currently not in the scope of this app, and some ways on how you 
+                                can do those.
+                            </b>
+
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    The app requires that attendance for a date for a course is uploaded only once. 
+                                    If you have 2 separate files for a single date, like class Group 1 and Group 2,
+                                    you can merge them as a single file and upload it.
+                                </li>
+                                <li class="list-group-item">
+                                    The app currently does not support deleting or editing attendance that has already been uploaded. If you really need to do this,
+                                    you can consider deleting the entire course and uploading everything again with the required changes.
+                                </li>
+                                <li class="list-group-item">
+                                    The app tracks attendance by using the <span class="highlight">Roll Number</span> field specified when 
+                                    adding a course. 
+                                    <br>
+                                    For example, if an entry in the student file is <span class="highlight">Shreya, 13000117046</span> then it uses 
+                                    `13000117046` as an identifier to track attendance for `Shreya` in all attendance files.
+                                    <br>
+                                    So if a student always joins using some other name, like Guest or something else, you can specify it in the 
+                                    original student file that is uploaded for a course. 
+                                    <br>
+                                    For example, if Shreya always joins the meetings as 
+                                    `Shreya_Guest` instead of `13000117046`, the course student file should contain 
+                                    <span class="highlight">Shreya, Shreya_Guest</span> instead of <span class="highlight">Shreya, 13000117046</span>
+                                </li>
+                            </ul>
+                            </b>
                         </div>
                     </div>
                 </div>

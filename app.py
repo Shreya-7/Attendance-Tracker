@@ -174,7 +174,7 @@ def upload_attendance():
 
             else:
                 return make_response(jsonify({
-                    'error': 'Report(s) uploaded do not conform to either formats - Google Form or MS Teams.'
+                    'error': f'Report {file.filename} uploaded do not conform to either formats - Google Form or MS Teams.'
                 }), 400)
 
             form_data['flags'] = ''
@@ -239,7 +239,7 @@ def upload_attendance():
 
         if date in course['dates']:
             return make_response(jsonify({
-                'error': 'Attendance for this date has already been recorded.'
+                'error': f'Attendance for the date in {file.filename} has already been recorded.'
             }), 400)
 
         for roll in students.keys():

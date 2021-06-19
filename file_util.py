@@ -1,9 +1,12 @@
 import csv
 import openpyxl
 import pandas as pd
+import codecs
 
 from dateutil import parser
 from db_util import Database
+
+# Heading checks have to be modified in 2 places - heading_check() and get_file_type()
 
 
 class UploadedFile:
@@ -32,13 +35,13 @@ class UploadedFile:
 
             :return True if matches, an error string if not
         """
-
+        print(file_headings, required_headings)
         message = 'Wrong headings. Please check the Help section under the `Upload Reports tab`.'
+        file_headings = [element.strip() for element in file_headings]
         if strictness == 1 and file_headings != required_headings:
             return message
 
         elif strictness == 0:
-
             for heading in required_headings:
                 if heading not in file_headings:
                     return message
@@ -93,19 +96,71 @@ class UploadedFile:
             Returns 0 for Google Form, 1 for Teams, -1 for neither
         """
 
-        with open(self.file_path, mode='r') as csv_file:
+        try:
+            # This section works for a Google Form file or a comma separated MS Teams file
+            with open(self.file_path, mode='r', encoding='utf8') as csv_file:
 
-            csv_reader = csv.reader(csv_file, delimiter=',')
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                for row in csv_reader:
 
-            for row in csv_reader:
+                    row = [element.strip() for element in row]
 
-                if row == self.gform_headings or self.gform_headings in row:
-                    return 0
-                elif row == self.teams_headings:
-                    return 1
+                    # Gform has to be checked like this because the strictness should be 0
+                    gform_check = True
+                    for heading in self.gform_headings:
+                        if heading not in row:
+                            gform_check = False
+                            break
 
-                else:
+                    if gform_check:
+                        return 0
+                    elif row == self.teams_headings:
+                        return 1
+
+                    else:
+                        return -1
+        except:
+            # Try fails - assumed to be tab separated MS Teams file
+            print("In except section of get_file_type()")
+            uploaded_file = codecs.open(self.file_path, 'rU', 'UTF-16')
+            df = pd.read_csv(uploaded_file, sep='\t')
+
+            heads = df.columns.values.tolist()
+
+            # This weird as hell check because for some weird as hell reason the entire weird as hell
+            # heading row is being picked up as one element
+            for supposed_heading in self.teams_headings:
+                if supposed_heading not in heads:
                     return -1
+
+            return 1
+
+    def get_file_contents(self) -> list:
+        """
+            Saves the file contents as a list of lists, each new line becoming a new list within the parent list.
+        """
+
+        self.content = []
+        try:
+            # This section works for a Google Form file or a comma separated MS Teams file
+            with open(self.file_path, mode='r') as csv_file:
+
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                for row in csv_reader:
+                    self.content.append(row)
+
+        except:
+            # Try fails - assumed to be tab separated MS Teams file
+            print("In except section of get_file_contents()")
+            uploaded_file = codecs.open(self.file_path, 'rU', 'UTF-16')
+            df = pd.read_csv(uploaded_file, sep='\t')
+
+            self.content = [['Full Name', 'User Action', 'Timestamp']]
+            file_content = df.reset_index().values.tolist()
+            for row in file_content:
+                row = row[1:]
+                row = [str(element) for element in row]
+                self.content.append(row)
 
 
 class StudentFile(UploadedFile):
@@ -163,23 +218,21 @@ class GoogleFormFile(UploadedFile):
             :return (`date`, True) if everything is OK, (an error string, False) if not
         """
         dates = []
-        with open(self.file_path, mode='r') as csv_file:
+        self.get_file_contents()
+        line_count = 0
+        for row in self.content:
 
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
-            for row in csv_reader:
+            if line_count == 0:
+                timestamp_index = row.index('Timestamp')
 
-                if line_count == 0:
-                    timestamp_index = row.index('Timestamp')
+            else:
+                timestamp = parser.parse(
+                    row[timestamp_index])
 
-                else:
-                    timestamp = parser.parse(
-                        row[timestamp_index])
+                extracted_date = timestamp.date()  # extract date
+                dates.append(extracted_date)
 
-                    extracted_date = timestamp.date()  # extract date
-                    dates.append(extracted_date)
-
-                line_count += 1
+            line_count += 1
 
         if line_count < 2:
             return 'There are no details in this file.', False
@@ -200,37 +253,35 @@ class GoogleFormFile(UploadedFile):
             and tuple (date, Boolean) as value
         """
         students = {}
-        with open(file_path, mode='r') as csv_file:
+        self.get_file_contents()
+        line_count = 0
 
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
+        # process the file
+        for row in self.content:
 
-            # process the file
+            if line_count == 0:  # heading row
 
-            for row in csv_reader:
-                if line_count == 0:  # heading row
+                check_result = self.heading_check(
+                    self.gform_headings, row, strictness=0)
+                if check_result is not True:
+                    return check_result
 
-                    check_result = self.heading_check(
-                        self.gform_headings, row)
-                    if check_result is not True:
-                        return check_result
+                # find indexes so that column exchange is permitted
+                roll_index = row.index('Your Roll Number')
+                timestamp_index = row.index('Timestamp')
 
-                    # find indexes so that column exchange is permitted
-                    roll_index = row.index('Your Roll Number')
-                    timestamp_index = row.index('Timestamp')
+            else:
 
-                else:
+                student_id = str(int(row[roll_index].split('.')[0]))
+                timestamp = parser.parse(
+                    row[timestamp_index])
 
-                    student_id = str(int(row[roll_index].split('.')[0]))
-                    timestamp = parser.parse(
-                        row[timestamp_index])
+                extracted_date = timestamp.date()  # extract date
 
-                    extracted_date = timestamp.date()  # extract date
+                # mark student in the file as present
+                students[student_id] = (self.date, True)
 
-                    # mark student in the file as present
-                    students[student_id] = (self.date, True)
-
-                line_count += 1
+            line_count += 1
 
         # empty file check
         if len(students) < 1:
@@ -252,25 +303,23 @@ class TeamsFile(UploadedFile):
         """
 
         dates = []
-        with open(self.file_path, mode='r') as csv_file:
+        self.get_file_contents()
+        line_count = 0
 
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
+        # process the file
+        for row in self.content:
 
-            # process the file
-
-            for row in csv_reader:
-
-                if line_count == 0:  # heading row
-                    line_count += 1
-                    continue
-                else:
-                    timestamp = parser.parse(row[2], dayfirst=True)
-
-                    date = timestamp.date()  # extract date
-                    dates.append(date)
-
+            if line_count == 0:  # heading row
                 line_count += 1
+                continue
+            else:
+                print(row)
+                timestamp = parser.parse(row[2], dayfirst=True)
+
+                date = timestamp.date()  # extract date
+                dates.append(date)
+
+            line_count += 1
 
         if line_count < 2:
             return 'There are no details in this file.', False
@@ -295,60 +344,57 @@ class TeamsFile(UploadedFile):
 
         students = {}
         date = ''
-        with open(file_path, mode='r') as csv_file:
+        self.get_file_contents()
+        line_count = 0
 
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
+        # process the file
+        for row in self.content:
+            if line_count == 0:  # heading row
 
-            # process the file
+                check_result = self.heading_check(
+                    self.teams_headings, row)
+                if check_result is not True:
+                    return check_result
 
-            for row in csv_reader:
-                if line_count == 0:  # heading row
+            else:
 
-                    check_result = self.heading_check(
-                        self.teams_headings, row)
-                    if check_result is not True:
-                        return check_result
+                student_id = str(int(row[0].split('.')[0]))
+                action = row[1]  # 'Left' (0) or 'Joined (1)'
+                timestamp = parser.parse(row[2], dayfirst=True)
 
+                # first appearance of student in the file
+                if student_id not in students.keys():
+                    students[student_id] = {
+                        'action': 1,  # first entry is always 'Join'
+                        'duration': 0,  # in seconds, 0 since 'Left' has not been encountered yet
+                        'time': timestamp
+                    }
+
+                # update student with the corresponding action
                 else:
+                    if action == 'Left':
 
-                    student_id = str(int(row[0].split('.')[0]))
-                    action = row[1]  # 'Left' (0) or 'Joined (1)'
-                    timestamp = parser.parse(row[2], dayfirst=True)
+                        # update duration for which student was in the meeting
+                        a = max(timestamp, students[student_id]['time'])
+                        b = min(timestamp, students[student_id]['time'])
 
-                    # first appearance of student in the file
-                    if student_id not in students.keys():
-                        students[student_id] = {
-                            'action': 1,  # first entry is always 'Join'
-                            'duration': 0,  # in seconds, 0 since 'Left' has not been encountered yet
-                            'time': timestamp
-                        }
+                        # update student status to 'Left'
+                        students[student_id]['action'] = 0
+                        students[student_id]['duration'] += (
+                            a-b).total_seconds()
 
-                    # update student with the corresponding action
+                        # update 'last seen' timestamp
+                        students[student_id]['time'] = timestamp
+
                     else:
-                        if action == 'Left':
 
-                            # update duration for which student was in the meeting
-                            a = max(timestamp, students[student_id]['time'])
-                            b = min(timestamp, students[student_id]['time'])
+                        # update student status to 'Joined'
+                        students[student_id]['action'] = 1
 
-                            # update student status to 'Left'
-                            students[student_id]['action'] = 0
-                            students[student_id]['duration'] += (
-                                a-b).total_seconds()
+                        # update 'last seen' timestamp
+                        students[student_id]['time'] = timestamp
 
-                            # update 'last seen' timestamp
-                            students[student_id]['time'] = timestamp
-
-                        else:
-
-                            # update student status to 'Joined'
-                            students[student_id]['action'] = 1
-
-                            # update 'last seen' timestamp
-                            students[student_id]['time'] = timestamp
-
-                line_count += 1
+            line_count += 1
 
         # apply threshold barrier to extracted data
         for key, value in students.items():

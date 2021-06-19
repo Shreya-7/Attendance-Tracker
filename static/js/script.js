@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
         var formData = new FormData(my_form);
         formData.append('api', '0');
 
-        if (formData.get('course_id').indexOf('-') != -1) {
-            resultAlert('add_course_alert', 'Course ID cannot have the `-` character. Please choose something else.', 'alert-warning');
+        if (formData.get('course_id').indexOf('_') != -1) {
+            resultAlert('add_course_alert', 'Course ID cannot have the `_` character. Please choose something else.', 'alert-warning');
             return false;
         }
 
-        if (formData.get('batch').indexOf('-') != -1) {
-            resultAlert('add_course_alert', 'Batch cannot have the `-` character. Please choose something else.', 'alert-warning');
+        if (formData.get('batch').indexOf('_') != -1) {
+            resultAlert('add_course_alert', 'Batch cannot have the `_` character. Please choose something else.', 'alert-warning');
             return false;
         }
 
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
                     selects.forEach(select=>{
                         const option = document.createElement('option');
-                        option.value = `${response['course']['course_id']}-${response['course']['batch']}`;
+                        option.value = `${response['course']['course_id']}_${response['course']['batch']}`;
                         option.innerHTML = `${response['course']['course_id']} - ${response['course']['course_name']} (Batch ${response['course']['batch']})`;
                         select.add(option);
                     })
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         var my_form = document.forms.upload_attendance_form;
         var formData = new FormData(my_form);
 
-        const identifiers = document.getElementById('up-course').value.split('-');
+        const identifiers = document.getElementById('up-course').value.split('_');
         formData.append('course_id', identifiers[0]);
         formData.append('batch', identifiers[1]);
         formData.append('api', '0');
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         var my_form = document.forms.delete_course_form;
         var formData = new FormData(my_form);
 
-        const identifiers = document.getElementById('del-course').value.split('-');
+        const identifiers = document.getElementById('del-course').value.split('_');
         formData.append('course_id', identifiers[0]);
         formData.append('batch', identifiers[1]);
         formData.append('api', '0');
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             if(response.status == 200) {
                 resultAlert('delete_course_alert', 'Deleted course :(', 'alert-success');
                 
-                const option_value = `${identifiers[0]}-${identifiers[1]}`;
+                const option_value = `${identifiers[0]}_${identifiers[1]}`;
                 selects.forEach(select=>{
                     for(var i=0; i<select.length; i++) {
                         if (select.options[i].value == option_value)
