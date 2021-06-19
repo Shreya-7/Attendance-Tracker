@@ -35,7 +35,6 @@ class UploadedFile:
 
             :return True if matches, an error string if not
         """
-        print(file_headings, required_headings)
         message = 'Wrong headings. Please check the Help section under the `Upload Reports tab`.'
         file_headings = [element.strip() for element in file_headings]
         if strictness == 1 and file_headings != required_headings:
@@ -313,7 +312,6 @@ class TeamsFile(UploadedFile):
                 line_count += 1
                 continue
             else:
-                print(row)
                 timestamp = parser.parse(row[2], dayfirst=True)
 
                 date = timestamp.date()  # extract date
