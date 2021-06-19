@@ -1,5 +1,5 @@
 This app is meant to automate the attendance tracking and maintenance process for teachers teaching via online platforms. The only thing required of the teacher is to register the courses and upload the attendance reports available via the platforms. The app takes care of the entire process of date-wise logging and tracking, as well as other filtering features. The teachers can download attendance and defaulter reports in two formats (XLSX, CSV).  
-All the features of the app can be found under the Help section of the hosted app at https://aepweb.herokuapp.com/
+All the features of the app can be found under the Help section of the hosted app at http://attendance-aep.herokuapp.com/
 
 ## RUNNING THE APP:
 
