@@ -122,7 +122,7 @@
                                                 <td>13</td>
                                             </tr>
                                         </table>
-                                        Any and all tracking done for the student is via the Roll Number.
+                                        Any and all tracking done for the student is via the Roll Number, which has to be unique throughout the entire college. The name is only used when generating the downloadable report.
                                     </li>
                                     <li class="list-group-item"><b>Very Important Note:</b> 
                                         The <span class="highlight">Full Name</span> field in the MS Teams report 
@@ -400,14 +400,18 @@
                         <div class="tab-pane" id="troubleshoot" role="tabpanel" aria-labelledby="troubleshoot-tab">
                             <b>
                                 The app has very descriptive error messages but here are some pointers on how to troubleshoot the 'Unexpected error'
-                                message:
+                                message or if the 'Updating' messages are frozen:
                             </b>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">Check whether the file formats conform to the specified ones.</li>
                                 <li class="list-group-item">Check whether the date formats are okay. They are different for MS Teams and Google Form.</li>
+                                <li class="list-group-item">Check whether the file contains empty rows.</li>
                                 <li class="list-group-item">Check whether the course ID has an underscore character. (The app doesn't allow such courses
                                     to be created but if the course was made before that update, it might still exist and cause errors)
                                     If it does, please delete the course because it cannot be used.
+                                </li>
+                                <li class="list-group-item">
+                                    If stuck at the 'Updating...' message, please refresh before reuploading edited files.
                                 </li>
                             </ul>
                             <b>
@@ -432,7 +436,7 @@
                                     For example, if an entry in the student file is <span class="highlight">Shreya, 13000117046</span> then it uses 
                                     `13000117046` as an identifier to track attendance for `Shreya` in all attendance files.
                                     <br>
-                                    So if a student always joins using some other name, like Guest or something else, you can specify it in the 
+                                    So if a student always joins using some other name, like Guest or the Student ID or something else, you can specify it in the 
                                     original student file that is uploaded for a course. 
                                     <br>
                                     For example, if Shreya always joins the meetings as 
