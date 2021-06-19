@@ -285,7 +285,7 @@ def download_attendance():
 
     client_obj.add_email(session['user']['email'])
 
-    course_id, batch = request.form.get('down-course').split('-')
+    course_id, batch = request.form.get('down-course').split('_')
 
     db_obj = Database(client_obj, course_id, batch)
 
