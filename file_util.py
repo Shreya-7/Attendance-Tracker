@@ -220,7 +220,6 @@ class GoogleFormFile(UploadedFile):
         self.get_file_contents()
         line_count = 0
         for row in self.content:
-
             if line_count == 0:
                 timestamp_index = row.index('Timestamp')
 
@@ -271,7 +270,7 @@ class GoogleFormFile(UploadedFile):
 
             else:
 
-                student_id = str(int(row[roll_index].split('.')[0]))
+                student_id = row[roll_index]
                 timestamp = parser.parse(
                     row[timestamp_index])
 
@@ -356,7 +355,7 @@ class TeamsFile(UploadedFile):
 
             else:
 
-                student_id = str(int(row[0].split('.')[0]))
+                student_id = row[0]
                 action = row[1]  # 'Left' (0) or 'Joined (1)'
                 timestamp = parser.parse(row[2], dayfirst=True)
 
