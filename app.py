@@ -66,6 +66,8 @@ def index():
     # empty the upload folder directory
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for file in files:
+            if file.startswith('.gitkeep'):
+                continue
             os.remove(os.path.join(root, file))
 
     # redirect to sign-in page if not logged in
