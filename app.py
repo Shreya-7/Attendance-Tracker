@@ -18,7 +18,7 @@ app = Flask(__name__, template_folder='templates', static_url_path='/static')
 app.secret_key = "lol"
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config["UPLOAD_FOLDER"] = "./files"
+app.config["UPLOAD_FOLDER"] = os.getenv('UPLOAD_FOLDER')
 
 client = MongoClient(os.getenv('MONGO_DB_URL'))
 teachers = client["attendance-website"]["teacher"]

@@ -122,7 +122,11 @@ class Database:
 
         # destination folder and file path
         dest = f'/{self.email}/{file_name}'
-        dbx = dropbox.Dropbox(access_token)
+        dbx = dropbox.Dropbox(
+            app_key=os.getenv("DROPBOX_APP_KEY"),
+            app_secret=os.getenv("DROPBOX_APP_SECRET"),
+            oauth2_refresh_token=os.getenv("DROPBOX_REFRESH_TOKEN")
+        )
 
         with open(file_path, 'rb') as f:
             dbx.files_upload(f.read(), dest, autorename=True)
